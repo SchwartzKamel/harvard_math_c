@@ -2,10 +2,10 @@
 
 ## Build & run
 
-Configure the canonical CMake build from the repository root:
+Configure the canonical CMake + Ninja build from the repository root:
 
 ```bash
-cmake -S . -B build -DHM_BUILD_TESTS=ON -DHM_BUILD_EXAMPLES=ON
+cmake -S . -B build -G Ninja -DHM_BUILD_TESTS=ON -DHM_BUILD_EXAMPLES=ON
 cmake --build build
 ./build/examples/harvard_math_example
 ```
@@ -14,7 +14,7 @@ Install to a temporary prefix when checking downstream consumption:
 
 ```bash
 cmake --install build --prefix /tmp/harvard_math-prefix
-cmake -S tests/package_consumer -B /tmp/harvard_math-consumer \
+cmake -S tests/package_consumer -B /tmp/harvard_math-consumer -G Ninja \
   -DCMAKE_PREFIX_PATH=/tmp/harvard_math-prefix
 cmake --build /tmp/harvard_math-consumer
 ctest --test-dir /tmp/harvard_math-consumer --output-on-failure
@@ -23,7 +23,7 @@ ctest --test-dir /tmp/harvard_math-consumer --output-on-failure
 ## Validate (backpressure)
 
 ```bash
-cmake -S . -B build -DHM_BUILD_TESTS=ON -DHM_BUILD_EXAMPLES=ON
+cmake -S . -B build -G Ninja -DHM_BUILD_TESTS=ON -DHM_BUILD_EXAMPLES=ON
 cmake --build build
 ctest --test-dir build --output-on-failure
 ```

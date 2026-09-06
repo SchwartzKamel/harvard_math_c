@@ -19,7 +19,7 @@ As a C programmer studying or teaching introductory statistics, I want to includ
 
 | Criterion (EARS) | How it's verified (command/check) |
 |---|---|
-| When a fresh checkout is configured with CMake, the project shall generate a build and CTest shall report all tests passing. | `cmake -S . -B build -DHM_BUILD_TESTS=ON -DHM_BUILD_EXAMPLES=ON && cmake --build build && ctest --test-dir build --output-on-failure` |
+| When a fresh checkout is configured with CMake and Ninja, the project shall generate a build and CTest shall report all tests passing. | `cmake -S . -B build -G Ninja -DHM_BUILD_TESTS=ON -DHM_BUILD_EXAMPLES=ON && cmake --build build && ctest --test-dir build --output-on-failure` |
 | When a caller supplies a non-empty finite array and valid output pointer, each initial descriptive statistic shall return `HM_STATUS_OK` and the mathematically correct result within the test tolerance. | `ctest --test-dir build --output-on-failure` |
 | If a caller supplies an empty array, a null output pointer, a null values pointer with a positive count, insufficient values for sample statistics, or a non-finite value, the library shall return the documented non-success status without dereferencing invalid memory. | Error-path assertions in `tests/test_stats.c`, run by CTest. |
 | When median is requested, the library shall leave the caller's input array unchanged. | Median immutability assertion in `tests/test_stats.c`. |
@@ -33,7 +33,7 @@ As a C programmer studying or teaching introductory statistics, I want to includ
 
 ## Assumptions
 - The project name and installed package name are `harvard_math`; the public include prefix is `harvard_math` and the C symbol prefix is `hm_`.
-- C99 is the compatibility floor. CMake is the canonical build system; a Makefile wrapper is optional convenience, not a second build definition.
+- C99 is the compatibility floor. CMake is the canonical build system and Ninja is the recommended generator; no second build definition is required.
 - Statistics operate on immutable finite `double` arrays. Empty input and non-finite values are errors rather than silently propagated sentinels.
 - Public functions use an output pointer plus `hm_status` so a valid numeric result is never confused with an error sentinel.
 - Initial scope is descriptive batch statistics only; no streaming, weighted data, quantiles, probability distributions, CLI, or ABI-stability promise is required yet.

@@ -1,0 +1,10 @@
+prefix=${pcfiledir}/../..
+exec_prefix=${prefix}
+libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
+
+Name: harvard_math
+Description: Small descriptive-statistics library for C
+Version: @PROJECT_VERSION@
+Libs: -L${libdir} -lharvard_math
+Cflags: -I${includedir}

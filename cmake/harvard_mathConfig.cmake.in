@@ -1,0 +1,5 @@
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/harvard_mathTargets.cmake")
+
+check_required_components(harvard_math)
