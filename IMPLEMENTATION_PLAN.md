@@ -80,8 +80,8 @@
 - **files/areas:** `README.md`, `docs/design.md`, `bench/`
 - **validation:** `make benchmark && /home/lafia/.agents/skills/wgm/scripts/check-docs.sh .`
 - **acceptance:** README shows the benchmark command, machine/compiler/flags, dataset sizes, repetitions/warmups, correctness tolerance, handwritten/GSL comparison limits, and a clearly labeled result snapshot.
-- **status:** pending
-- **notes:** Results must be regenerated rather than presented as universal claims.
+- **status:** done
+- **notes:** README now includes the default handwritten-reference snapshot, optimized GSL 2.8 peer snapshot, reproduction command, speedup definition, semantic caveats, and machine-specific scope. Benchmark and docs structural checks passed.
 
 ## Later (backlog)
 - Add streaming accumulators as a separate API only when a real caller needs data that cannot fit in a batch.
@@ -99,8 +99,8 @@
 - **files/areas:** `bench/`, `README.md`, `Makefile`, optimized library, optional GSL adapter
 - **validation:** `make clean && make test && make benchmark`
 - **acceptance:** Correctness-checked benchmark output is reproducible, the safe library meets the performance contract against the handwritten reference, and the README explains how to reproduce and interpret the comparison.
-- **status:** pending
-- **notes:** Run optional GSL comparison separately when the dependency is available; do not turn its absence into a default-build failure.
+- **status:** done
+- **notes:** Exact command passed: CTest green, benchmark CSV generated with ten rows, all rows correctness-checked before timing. Optional GSL-enabled mode also passed separately with GSL 2.8 built using `-O3 -DNDEBUG`.
 
 ## Done
 - Plan and requirements artifacts — goal, API defaults, scope, acceptance checks, and holdout journey recorded.
@@ -108,6 +108,8 @@
 - T7 — Fast checked linear statistics — safe one-pass/fused paths and centered variance passed CTest and met the current benchmark target.
 - T8 — Fast checked median — fused copy/validation and guarded introselect passed adversarial-shape tests and benchmarked well above qsort on the generated large workload.
 - T9 — Optional GSL peer adapter — dependency-free and GSL-enabled benchmark modes both passed with semantic differences documented.
+- T10 — Reproducible performance methodology/results — README and design docs updated; benchmark and docs checks passed.
+- PZ — Performance demo — exact `make clean && make test && make benchmark` gate passed with CSV output.
 - Performance plan and baseline docs audit — checked API performance goal, reference semantics, optional peer policy, and Full-track baseline recorded.
 - T1 — CMake/CTest signal and minimal public library target — configure, build, and status smoke test passed.
 - T2 — Initial descriptive batch-statistics API — clean build and CTest pass; all declared statistics and error paths covered.

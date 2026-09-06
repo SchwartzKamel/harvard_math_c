@@ -78,6 +78,58 @@ PKG_CONFIG_PATH=/path/to/gsl/lib/pkgconfig make benchmark GSL=ON
 
 GSL is not required for the default benchmark; missing GSL is reported as an optional peer limitation.
 
+#### Performance snapshot
+
+The following snapshot was recorded on 2026-09-06 from the optimized implementation at `7a48028`:
+
+```text
+CPU:       Intel Core i9-14900HX, WSL2
+Compiler:  GCC 11.4
+Build:     CMake Release, -O3 -DNDEBUG, Ninja
+Dataset:   1,048,576 deterministic finite doubles
+Timing:    CPU 2 pinned with taskset, 10 warmups, 50 repetitions, median of 5 process runs
+```
+
+The handwritten reference uses the same checked-call shape and input data. Speedup means
+`reference time / harvard_math time`; values above `1.0x` mean `harvard_math` was faster.
+
+| Operation | Handwritten C (µs) | `harvard_math` (µs) | Speedup |
+|---|---:|---:|---:|
+| sum | 691.750 | 387.809 | 1.78x |
+| mean | 683.025 | 382.085 | 1.76x |
+| min | 1,081.074 | 764.715 | 1.40x |
+| max | 1,056.311 | 759.473 | 1.39x |
+| range | 1,059.358 | 762.258 | 1.37x |
+| median | 58,302.725 | 3,468.434 | 16.89x |
+| population variance | 1,107.122 | 1,095.203 | 1.04x |
+| sample variance | 1,078.041 | 1,127.175 | 1.01x |
+| population stddev | 1,093.357 | 1,095.025 | 1.00x |
+| sample stddev | 1,074.453 | 1,119.122 | 0.96x |
+
+A GSL 2.8 peer build using the same `-O3 -DNDEBUG` flags produced these matching-operation results:
+
+| Operation | `harvard_math` (µs) | GSL (µs) | `harvard_math` / GSL |
+|---|---:|---:|---:|
+| mean | 383.589 | 4,606.966 | 0.08x |
+| min | 778.465 | 1,087.150 | 0.72x |
+| max | 762.521 | 1,055.470 | 0.73x |
+| range | 786.550 | 1,054.188 | 0.75x |
+| median | 3,445.003 | 2,720.537 | 1.29x |
+| sample variance | 1,092.129 | 8,846.405 | 0.12x |
+| sample stddev | 1,072.336 | 8,886.263 | 0.12x |
+
+These numbers are evidence for this CPU/compiler/build, not a universal guarantee. GSL has different stride, validation, and median-mutation semantics; the adapter reconciles those differences and intentionally leaves sum and population variance out of the GSL table.
+
+To reproduce the default snapshot's shape on Linux:
+
+```bash
+make clean
+make benchmark
+taskset -c 2 build/bench/harvard_math_benchmark \
+    --size 1048576 --warmups 10 --repetitions 50 \
+    --csv /tmp/harvard_math-benchmark.csv
+```
+
 ## Install and import from another CMake project
 
 Install to a prefix:
