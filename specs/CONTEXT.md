@@ -15,6 +15,9 @@
 | Benchmark | A repeatable timed measurement that first checks result equivalence. | `benchmark` | A correctness test or a universal performance guarantee. |
 | Speedup | Reference time divided by library time; values above 1.0 mean the library was faster in that run. | `speedup` | A causal claim about every machine. |
 | Peer implementation | An established external library with an adapter that reconciles API semantics before comparison. | `peer` | The handwritten reference. |
+| Z-score | A standardized scalar value computed as `(value - mean) / stddev`. | `hm_zscore` | A z-test statistic. |
+| Slope | The ordinary least-squares slope of paired response values against predictor values. | `hm_slope` | An intercept, correlation, or prediction. |
+| Undefined result | A mathematically requested result with no finite definition for the supplied inputs. | `HM_STATUS_UNDEFINED` | A malformed pointer or non-finite input. |
 
 ## Avoid (non-canonical aliases)
 
@@ -25,4 +28,4 @@
 
 ## Open questions
 
-Streaming, weighted, and inferential statistics are later extensions. The performance pass compares the checked batch API against a reference and optional peer implementations.
+Streaming, weighted, and inferential statistics are later extensions. The performance pass compares the checked batch API against a reference and optional peer implementations. The school-core slice adds z-score and ordinary least-squares slope without adding hypothesis tests or a full regression model.

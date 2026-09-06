@@ -1,0 +1,13 @@
+name: school-core
+description: Use the public umbrella header to calculate a z-score and simple-regression slope in a school-style example.
+tier: 1
+target:
+  kind: cli
+  start: cmake --build build --target harvard_math_example && ./build/examples/harvard_math_example
+setup:
+  - The repository is configured with examples enabled.
+steps:
+  - action: Build and run the documented statistics example.
+    expect: The executable exits successfully and prints a mean, sample standard deviation, z-score, and slope using the public library API.
+  - action: Compare the printed z-score and slope with the formulas documented in README.md.
+    expect: The values match the example data and the example does not require private headers or manual library implementation code.

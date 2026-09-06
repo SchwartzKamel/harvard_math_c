@@ -5,8 +5,9 @@
 ## Convergence
 - **Satisfaction threshold:** 95 — overall holdout-scenario score required before handoff.
 - **Stratified order:** tier 1 benchmark journey first; deterministic correctness and benchmark checks remain hard gates.
-- **Scenarios:** `scenarios/performance-benchmark.yaml` (holdout; do not read during implementation).
+- **Scenarios:** `scenarios/performance-benchmark.yaml` and `scenarios/school-core.yaml` (holdouts; do not read during implementation).
 - **Performance contract:** optimize the checked public API; do not trade away validation, numerical semantics, or input immutability.
+- **School-core contract:** add z-score and ordinary least-squares slope without expanding into hypothesis tests or a full regression model.
 
 ## Now (next up)
 
@@ -83,6 +84,29 @@
 - **status:** done
 - **notes:** README now includes the default handwritten-reference snapshot, optimized GSL 2.8 peer snapshot, reproduction command, speedup definition, semantic caveats, and machine-specific scope. Benchmark and docs structural checks passed.
 
+### T11 — Add checked z-score support
+- **files/areas:** `include/harvard_math/stats.h`, `src/stats.c`, `tests/test_stats.c`, `README.md`
+- **validation:** `make test`
+- **acceptance:** `hm_zscore` computes the documented standardized value, rejects non-finite/invalid inputs, returns `HM_STATUS_UNDEFINED` for zero standard deviation, and leaves output untouched on failure.
+- **scenarios/tier:** `school-core`, tier 1.
+- **status:** pending
+- **notes:** Append `HM_STATUS_UNDEFINED` so existing status values remain stable.
+
+### T12 — Add ordinary least-squares slope support
+- **files/areas:** `include/harvard_math/regression.h`, `include/harvard_math/harvard_math.h`, `src/regression.c`, `CMakeLists.txt`, `tests/test_regression.c`
+- **validation:** `make test`
+- **acceptance:** `hm_slope` computes centered least-squares slope for finite paired arrays, rejects insufficient/constant-x/invalid input with explicit statuses, and does not mutate caller arrays.
+- **scenarios/tier:** `school-core`, tier 1.
+- **status:** pending
+- **notes:** Keep regression code in its own module while making it available from the umbrella header.
+
+### T13 — Document and demonstrate the school core
+- **files/areas:** `README.md`, `docs/design.md`, `examples/basic.c`, `examples/CMakeLists.txt`, `tests/package_consumer/`
+- **validation:** `make test && make package-test && cmake --build build --target harvard_math_example && ./build/examples/harvard_math_example`
+- **acceptance:** Public documentation and the runnable example show mean, sample stddev, z-score, and slope with formulas and undefined-case semantics; installed consumers continue to build.
+- **status:** pending
+- **notes:** No z-test, intercept, correlation, or prediction API is added in this slice.
+
 ## Later (backlog)
 - Add streaming accumulators as a separate API only when a real caller needs data that cannot fit in a batch.
 - Add weighted/quantile/correlation modules behind new public headers with their own formula and edge-case contracts.
@@ -95,12 +119,19 @@
 - **status:** done
 - **notes:** Final tier-1 install demo passed before this performance pass.
 
-### PZ — Performance demo validation (required before Ship/Handoff)
+### PZ — Performance demo validation (completed)
 - **files/areas:** `bench/`, `README.md`, `Makefile`, optimized library, optional GSL adapter
 - **validation:** `make clean && make test && make benchmark`
 - **acceptance:** Correctness-checked benchmark output is reproducible, the safe library meets the performance contract against the handwritten reference, and the README explains how to reproduce and interpret the comparison.
 - **status:** done
 - **notes:** Exact command passed: CTest green, benchmark CSV generated with ten rows, all rows correctness-checked before timing. Optional GSL-enabled mode also passed separately with GSL 2.8 built using `-O3 -DNDEBUG`.
+
+### SZ — School-core demo validation (required before Ship/Handoff)
+- **files/areas:** `include/harvard_math/`, `src/`, `tests/`, `examples/basic.c`, `README.md`, installed package
+- **validation:** `make test && make package-test && cmake --build build --target harvard_math_example && ./build/examples/harvard_math_example`
+- **acceptance:** The public example and installed consumer exercise the new z-score and slope APIs, all deterministic tests pass, and the tier-1 school-core journey is satisfied.
+- **status:** pending
+- **notes:**
 
 ## Done
 - Plan and requirements artifacts — goal, API defaults, scope, acceptance checks, and holdout journey recorded.
