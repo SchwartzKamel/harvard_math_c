@@ -26,6 +26,7 @@ As a C programmer studying or teaching introductory statistics, I want to includ
 | When a downstream project calls `find_package(harvard_math CONFIG REQUIRED)`, the installed package shall expose `harvard_math::harvard_math`, its public headers, and the required math linkage. | Temporary-prefix install and external consumer build/run in `tests/package_consumer/`. |
 | When a caller defines a function matching `hm_statistic_fn`, the function shall be usable as a custom statistic without private-library types. | Compile-and-run custom midrange example in `examples/basic.c` and package consumer. |
 | When documentation is read, it shall state the population/sample divisor distinction, input/error contract, build commands, and extension layout. | README and `docs/design.md` review plus the demo command. |
+| When a user runs the Make convenience targets, the Makefile shall delegate to the CMake/Ninja build and expose build, test, example, install, and external-package validation without duplicating compiler rules. | `make clean && make test && make example && make package-test` |
 
 ## Holdout scenarios
 - **Files:** `scenarios/import-and-use.yaml`
@@ -33,7 +34,7 @@ As a C programmer studying or teaching introductory statistics, I want to includ
 
 ## Assumptions
 - The project name and installed package name are `harvard_math`; the public include prefix is `harvard_math` and the C symbol prefix is `hm_`.
-- C99 is the compatibility floor. CMake is the canonical build system and Ninja is the recommended generator; no second build definition is required.
+- C99 is the compatibility floor. CMake is the canonical build system and Ninja is the recommended generator; the requested Makefile is a thin wrapper, not a second build definition.
 - Statistics operate on immutable finite `double` arrays. Empty input and non-finite values are errors rather than silently propagated sentinels.
 - Public functions use an output pointer plus `hm_status` so a valid numeric result is never confused with an error sentinel.
 - Initial scope is descriptive batch statistics only; no streaming, weighted data, quantiles, probability distributions, CLI, or ABI-stability promise is required yet.

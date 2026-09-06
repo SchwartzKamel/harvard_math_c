@@ -42,6 +42,24 @@ mean=4.50 median=4.00 sample_stddev=2.516611 midrange=5.00
 
 Use `BUILD_SHARED_LIBS=ON` for a shared build; the default is a static library.
 
+### Make convenience wrapper
+
+The `Makefile` is intentionally thin: it delegates all compilation and installation to CMake, using Ninja by default. This keeps one source of build truth while making the common commands short:
+
+```bash
+make test
+make example
+make package-test
+make install PREFIX="$HOME/.local"
+```
+
+Override the generator or build directory when needed:
+
+```bash
+make BUILD_DIR=build-shared BUILD_SHARED_LIBS=ON test
+make GENERATOR="Unix Makefiles" test
+```
+
 ## Install and import from another CMake project
 
 Install to a prefix:
@@ -148,6 +166,7 @@ tests/                       CTest unit tests
     package_consumer/        separate installed-package consumer
 examples/                    runnable usage examples
 cmake/                       CMake package and pkg-config templates
+Makefile                     thin CMake/Ninja convenience wrapper
 docs/                        design and extension notes
 ```
 

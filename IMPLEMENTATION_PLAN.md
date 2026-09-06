@@ -39,6 +39,13 @@
 - **status:** done
 - **notes:** Added the Ninja-oriented quick start, API/error/formula documentation, layout/extension guide, and runnable custom-statistic example. The example build and execution passed.
 
+### T5 — Add the requested Make convenience wrapper
+- **files/areas:** `Makefile`, `.gitignore`, `README.md`, `AGENTS.md`, `docs/design.md`, `specs/`
+- **validation:** `make clean && make test && make example && make package-test`
+- **acceptance:** The Makefile delegates to CMake/Ninja and provides build, test, example, install, and external-package validation targets without duplicating compiler or linker rules.
+- **status:** done
+- **notes:** Make targets passed with Ninja, including an installed external consumer; build-tree patterns now remain ignored.
+
 ## Later (backlog)
 - Add streaming accumulators as a separate API only when a real caller needs data that cannot fit in a batch.
 - Add weighted/quantile/correlation modules behind new public headers with their own formula and edge-case contracts.
@@ -56,6 +63,7 @@
 - T2 — Initial descriptive batch-statistics API — clean build and CTest pass; all declared statistics and error paths covered.
 - T3 — Install/export/pkg-config integration and external consumer — temporary-prefix install and separate Ninja consumer passed.
 - T4 — Documentation, layout guide, and runnable example — Ninja configure/build and example execution passed.
+- T5 — Make convenience wrapper — `make clean && make test && make example && make package-test` passed.
 
 ---
 

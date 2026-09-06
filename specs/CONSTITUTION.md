@@ -15,7 +15,7 @@
 - Any new public symbol must be documented and covered by a deterministic test.
 
 ## Tech constraints
-- **Must use:** portable C99, CMake, the C standard library, and the platform math library where required.
+- **Must use:** portable C99, CMake (with Ninja recommended), the C standard library, and the platform math library where required. The Makefile may only wrap CMake commands.
 - **Must avoid:** third-party runtime dependencies, hidden allocation in O(1)-space statistics, and a command-line interface in the library core.
 - **Deployment target:** installed static or shared library consumed through CMake `find_package` or pkg-config.
 

@@ -76,12 +76,18 @@ Streaming accumulators should be a separate module and type when needed; they sh
 
 ## Build and packaging
 
-CMake is the only build definition. Ninja is the recommended generator:
+CMake is the only build definition. Ninja is the recommended generator. The root `Makefile` is only a convenience wrapper that forwards to CMake, so it cannot drift into a second compiler/linker definition:
 
 ```bash
 cmake -S . -B build -G Ninja -DHM_BUILD_TESTS=ON -DHM_BUILD_EXAMPLES=ON
 cmake --build build
 ctest --test-dir build --output-on-failure
+```
+
+The same common path is available as:
+
+```bash
+make test
 ```
 
 Installation exports the `harvard_math::harvard_math` target, headers, a CMake config package, and pkg-config metadata. A downstream project should use the exported target rather than manually guessing library or include paths.

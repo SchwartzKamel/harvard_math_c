@@ -30,6 +30,14 @@ ctest --test-dir build --output-on-failure
 
 The installed-package consumer is part of the end-to-end validation and must also build and run.
 
+The `Makefile` is a convenience wrapper around CMake/Ninja, not a second build definition:
+
+```bash
+make test
+make example
+make package-test
+```
+
 ## Operational notes
 
 - The library targets portable C99 and links the platform math library through CMake.
@@ -42,3 +50,4 @@ The installed-package consumer is part of the end-to-end validation and must als
 - Every public C symbol starts with `hm_`; every public statistic has the shape `hm_status fn(const double *, size_t, double *)`.
 - Keep common descriptive statistics single-pass and O(1) extra space. Median copies before sorting so caller data remains unchanged.
 - Add public API documentation and deterministic tests together.
+- Keep the Makefile limited to forwarding targets and options to CMake; change `CMakeLists.txt` for build behavior.

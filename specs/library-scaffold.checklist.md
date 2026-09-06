@@ -9,6 +9,7 @@
 - [x] [Spec §Acceptance criteria] Separates sample and population behavior.
 - [x] [Spec §Acceptance criteria] Defines invalid-input behavior and median immutability.
 - [x] [Spec §Acceptance criteria] Covers downstream package discovery and linking.
+- [x] [Spec §Acceptance criteria] Covers the requested Makefile wrapper without creating a second build definition.
 - [x] [Spec §Assumptions] Records language, package, naming, numeric, and error-contract defaults.
 - [x] [Spec §Out of scope] Explicitly bounds advanced statistics and deployment work.
 - [x] [Spec §Holdout scenarios] Names a tiered black-box acceptance journey.
@@ -17,4 +18,4 @@
 - [x] [Gap] No unresolved requirements remain for this scaffold slice.
 - [x] [Gap] No placeholder implementation tasks are required by the spec.
 
-**Result:** 16/16 checks pass.
+**Result:** 17/17 checks pass.
