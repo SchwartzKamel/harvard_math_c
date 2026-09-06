@@ -121,8 +121,8 @@
 - **validation:** `make test`
 - **acceptance:** Intercept, Pearson correlation, and simple prediction match ordinary least-squares formulas; constant/insufficient/non-finite cases return explicit statuses and inputs remain unchanged.
 - **scenarios/tier:** `inferential-regression`, tier 1.
-- **status:** pending
-- **notes:** Reuse the centered paired-data summary behind the existing slope implementation.
+- **status:** done
+- **notes:** Reused the centered paired-data summary for intercept, slope, and correlation; added checked simple prediction and constant-response boundaries. `make test` passed.
 
 ### T16 — Add educational multiple-regression fit and prediction
 - **files/areas:** `include/harvard_math/regression.h`, `src/regression.c`, `tests/test_regression.c`, `docs/design.md`
@@ -184,6 +184,7 @@
 - T12 — Checked ordinary least-squares slope — public regression module and CTest coverage passed.
 - T13 — School-core documentation/example — README, design docs, installed consumer, and example updated and validated.
 - T14 — Known-σ z-tests and confidence intervals — public analysis module and CTest coverage passed.
+- T15 — Simple regression intercept/correlation/prediction — centered formulas and boundary tests passed.
 - SZ — School-core demo — tier-1 z-score/slope journey passed with satisfaction 100/100.
 - Performance plan and baseline docs audit — checked API performance goal, reference semantics, optional peer policy, and Full-track baseline recorded.
 - T1 — CMake/CTest signal and minimal public library target — configure, build, and status smoke test passed.

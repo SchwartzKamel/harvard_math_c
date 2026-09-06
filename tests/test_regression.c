@@ -26,6 +26,7 @@ int main(void)
     const double x_offset[] = {1e16, 1e16 + 2.0, 1e16 + 4.0, 1e16 + 6.0};
     const double y_offset[] = {5.0, 7.0, 9.0, 11.0};
     const double constant_x[] = {3.0, 3.0, 3.0};
+    const double constant_y[] = {7.0, 7.0, 7.0};
     const double nonfinite[] = {1.0, NAN};
     double x_copy[4];
     double y_copy[4];
@@ -37,6 +38,12 @@ int main(void)
     /* This proves the ordinary least-squares formula on an exact line. */
     CHECK(hm_slope(x, y, 4, &result) == HM_STATUS_OK);
     CHECK(close_enough(result, 2.0));
+    CHECK(hm_intercept(x, y, 4, &result) == HM_STATUS_OK);
+    CHECK(close_enough(result, 0.0));
+    CHECK(hm_correlation(x, y, 4, &result) == HM_STATUS_OK);
+    CHECK(close_enough(result, 1.0));
+    CHECK(hm_predict(5.0, 0.0, 2.0, &result) == HM_STATUS_OK);
+    CHECK(close_enough(result, 10.0));
     CHECK(memcmp(x, x_copy, sizeof x) == 0);
     CHECK(memcmp(y, y_copy, sizeof y) == 0);
 
@@ -48,6 +55,7 @@ int main(void)
     result = 123.0;
     CHECK(hm_slope(constant_x, y, 3, &result) == HM_STATUS_UNDEFINED);
     CHECK(result == 123.0);
+    CHECK(hm_correlation(x, constant_y, 3, &result) == HM_STATUS_UNDEFINED);
     CHECK(hm_slope(x, y, 1, &result) == HM_STATUS_INSUFFICIENT_DATA);
     CHECK(hm_slope(NULL, y, 4, &result) == HM_STATUS_INVALID_ARGUMENT);
     CHECK(hm_slope(x, y, 4, NULL) == HM_STATUS_INVALID_ARGUMENT);
