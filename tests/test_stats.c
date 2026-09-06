@@ -62,6 +62,7 @@ int main(void)
     /* These checks prove the public status strings remain useful to callers. */
     CHECK(strcmp(hm_status_message(HM_STATUS_OK), "ok") == 0);
     CHECK(strcmp(hm_status_message(HM_STATUS_NONFINITE_INPUT), "non-finite input") == 0);
+    CHECK(strcmp(hm_status_message(HM_STATUS_UNDEFINED), "undefined result") == 0);
     CHECK(strcmp(hm_status_message((hm_status)-1), "unknown status") == 0);
 
     /* These checks prove each initial statistic uses the intended formula. */
@@ -69,6 +70,13 @@ int main(void)
     CHECK(close_enough(result, 18.0));
     CHECK(hm_mean(values, 4, &result) == HM_STATUS_OK);
     CHECK(close_enough(result, 4.5));
+    CHECK(hm_zscore(85.0, 75.0, 5.0, &result) == HM_STATUS_OK);
+    CHECK(close_enough(result, 2.0));
+    result = 123.0;
+    CHECK(hm_zscore(85.0, 75.0, 0.0, &result) == HM_STATUS_UNDEFINED);
+    CHECK(result == 123.0);
+    CHECK(hm_zscore(85.0, 75.0, -5.0, &result) == HM_STATUS_INVALID_ARGUMENT);
+    CHECK(hm_zscore(NAN, 75.0, 5.0, &result) == HM_STATUS_NONFINITE_INPUT);
     CHECK(hm_min(values, 4, &result) == HM_STATUS_OK);
     CHECK(close_enough(result, 2.0));
     CHECK(hm_max(values, 4, &result) == HM_STATUS_OK);

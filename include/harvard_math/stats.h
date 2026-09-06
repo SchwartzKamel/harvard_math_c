@@ -23,7 +23,8 @@ typedef enum hm_status {
     HM_STATUS_EMPTY_INPUT,
     HM_STATUS_INSUFFICIENT_DATA,
     HM_STATUS_NONFINITE_INPUT,
-    HM_STATUS_ALLOCATION_FAILED
+    HM_STATUS_ALLOCATION_FAILED,
+    HM_STATUS_UNDEFINED
 } hm_status;
 
 /* All built-in and user-defined batch statistics use this signature. */
@@ -38,6 +39,7 @@ HM_API const char *hm_status_message(hm_status status);
  */
 HM_API hm_status hm_sum(const double *values, size_t count, double *out);
 HM_API hm_status hm_mean(const double *values, size_t count, double *out);
+HM_API hm_status hm_zscore(double value, double mean, double stddev, double *out);
 HM_API hm_status hm_min(const double *values, size_t count, double *out);
 HM_API hm_status hm_max(const double *values, size_t count, double *out);
 HM_API hm_status hm_range(const double *values, size_t count, double *out);

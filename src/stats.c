@@ -181,6 +181,8 @@ const char *hm_status_message(hm_status status)
         return "non-finite input";
     case HM_STATUS_ALLOCATION_FAILED:
         return "allocation failed";
+    case HM_STATUS_UNDEFINED:
+        return "undefined result";
     default:
         return "unknown status";
     }
@@ -212,6 +214,30 @@ hm_status hm_mean(const double *values, size_t count, double *out)
         return status;
     }
     *out /= (double)count;
+    return HM_STATUS_OK;
+}
+
+hm_status hm_zscore(double value, double mean, double stddev, double *out)
+{
+    double result;
+
+    if (out == NULL) {
+        return HM_STATUS_INVALID_ARGUMENT;
+    }
+    if (!isfinite(value) || !isfinite(mean) || !isfinite(stddev)) {
+        return HM_STATUS_NONFINITE_INPUT;
+    }
+    if (stddev < 0.0) {
+        return HM_STATUS_INVALID_ARGUMENT;
+    }
+    if (stddev == 0.0) {
+        return HM_STATUS_UNDEFINED;
+    }
+    result = (value - mean) / stddev;
+    if (!isfinite(result)) {
+        return HM_STATUS_UNDEFINED;
+    }
+    *out = result;
     return HM_STATUS_OK;
 }
 

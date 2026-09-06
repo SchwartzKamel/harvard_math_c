@@ -89,8 +89,8 @@
 - **validation:** `make test`
 - **acceptance:** `hm_zscore` computes the documented standardized value, rejects non-finite/invalid inputs, returns `HM_STATUS_UNDEFINED` for zero standard deviation, and leaves output untouched on failure.
 - **scenarios/tier:** `school-core`, tier 1.
-- **status:** pending
-- **notes:** Append `HM_STATUS_UNDEFINED` so existing status values remain stable.
+- **status:** done
+- **notes:** Added `HM_STATUS_UNDEFINED` after existing enum values, implemented checked z-score, and covered positive, zero, negative, non-finite, and output-preservation cases. `make test` passed.
 
 ### T12 — Add ordinary least-squares slope support
 - **files/areas:** `include/harvard_math/regression.h`, `include/harvard_math/harvard_math.h`, `src/regression.c`, `CMakeLists.txt`, `tests/test_regression.c`
@@ -141,6 +141,7 @@
 - T9 — Optional GSL peer adapter — dependency-free and GSL-enabled benchmark modes both passed with semantic differences documented.
 - T10 — Reproducible performance methodology/results — README and design docs updated; benchmark and docs checks passed.
 - PZ — Performance demo — exact `make clean && make test && make benchmark` gate passed with CSV output.
+- T11 — Checked z-score — public API, undefined status, and boundary tests passed.
 - Performance plan and baseline docs audit — checked API performance goal, reference semantics, optional peer policy, and Full-track baseline recorded.
 - T1 — CMake/CTest signal and minimal public library target — configure, build, and status smoke test passed.
 - T2 — Initial descriptive batch-statistics API — clean build and CTest pass; all declared statistics and error paths covered.
