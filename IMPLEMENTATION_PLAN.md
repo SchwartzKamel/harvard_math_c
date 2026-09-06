@@ -109,12 +109,12 @@
 - **notes:** Updated the public API table, school-core formula section, example output, design guidance, historical scaffold scope, and installed consumer. The exact validation command passed with `zscore=1.390759` and `slope=2.00`.
 
 ### T14 — Add known-σ z-tests, p-values, and mean confidence intervals
-- **files/areas:** `include/harvard_math/analysis.h`, `include/harvard_math/harvard_math.h`, `src/analysis.c`, `CMakeLists.txt`, `tests/test_analysis.c`
+- **files/areas:** `include/harvard_math/analysis.h`, `include/harvard_math/harvard_math.h`, `src/analysis.c`, `CMakeLists.txt`, `tests/CMakeLists.txt`, `tests/test_analysis.c`
 - **validation:** `make test`
 - **acceptance:** One- and two-sample z-tests return z/p results for all alternatives; known-σ mean intervals support valid confidence fractions; invalid, zero-count, and non-positive-σ inputs preserve status/output contracts.
 - **scenarios/tier:** `inferential-regression`, tier 1.
-- **status:** pending
-- **notes:** Use the normal CDF/erfc and an internal inverse-normal approximation; no t-test dependency.
+- **status:** done
+- **notes:** Added public analysis types, one/two-sample known-σ z-tests, normal-tail p-values, inverse-normal confidence intervals, and boundary tests. `make test` passed.
 
 ### T15 — Add simple-regression intercept, correlation, and prediction
 - **files/areas:** `include/harvard_math/regression.h`, `src/regression.c`, `tests/test_regression.c`
@@ -183,6 +183,7 @@
 - T11 — Checked z-score — public API, undefined status, and boundary tests passed.
 - T12 — Checked ordinary least-squares slope — public regression module and CTest coverage passed.
 - T13 — School-core documentation/example — README, design docs, installed consumer, and example updated and validated.
+- T14 — Known-σ z-tests and confidence intervals — public analysis module and CTest coverage passed.
 - SZ — School-core demo — tier-1 z-score/slope journey passed with satisfaction 100/100.
 - Performance plan and baseline docs audit — checked API performance goal, reference semantics, optional peer policy, and Full-track baseline recorded.
 - T1 — CMake/CTest signal and minimal public library target — configure, build, and status smoke test passed.
