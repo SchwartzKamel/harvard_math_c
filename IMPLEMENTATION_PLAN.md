@@ -136,8 +136,8 @@
 - **files/areas:** `README.md`, `docs/design.md`, `examples/basic.c`, `tests/package_consumer/main.c`, `tests/package_consumer/`
 - **validation:** `make test && make package-test && cmake --build build --target harvard_math_example && ./build/examples/harvard_math_example`
 - **acceptance:** Public docs and installed/example consumers show z-test/p-value, confidence interval, intercept/correlation/prediction, and multiple-regression prediction with assumptions and edge statuses.
-- **status:** pending
-- **notes:** Keep t-tests, unknown-σ intervals, logistic regression, and coefficient standard errors out of this pass.
+- **status:** done
+- **notes:** README/design docs, example, and installed consumer now cover all added school inference/regression APIs. The exact validation command passed with the documented z-test, p-value, confidence interval, simple prediction, and multiple prediction output.
 
 ## Later (backlog)
 - Add streaming accumulators as a separate API only when a real caller needs data that cannot fit in a batch.
@@ -169,8 +169,8 @@
 - **files/areas:** `include/harvard_math/`, `src/analysis.c`, `src/regression.c`, `tests/`, `examples/basic.c`, `README.md`, installed package
 - **validation:** `make test && make package-test && cmake --build build --target harvard_math_example && ./build/examples/harvard_math_example`
 - **acceptance:** The example and installed consumer exercise z-tests, p-values, confidence intervals, simple regression, and multiple-regression prediction; all deterministic tests pass; the tier-1 inferential/regression journey is satisfied.
-- **status:** pending
-- **notes:**
+- **status:** done
+- **notes:** CTest, installed consumer, and example output all passed; the example prints the documented z-test, p-value, confidence interval, simple regression, and multiple-regression values.
 
 ## Done
 - Plan and requirements artifacts — goal, API defaults, scope, acceptance checks, and holdout journey recorded.
@@ -186,6 +186,8 @@
 - T14 — Known-σ z-tests and confidence intervals — public analysis module and CTest coverage passed.
 - T15 — Simple regression intercept/correlation/prediction — centered formulas and boundary tests passed.
 - T16 — Educational multiple regression — intercept-first fit, prediction, singular-matrix, and input-boundary tests passed.
+- T17 — Inferential/regression documentation/example — README, design docs, installed consumer, and example validated.
+- IZ — Inferential/regression demo — tier-1 z-test/interval/regression journey passed with satisfaction 100/100.
 - SZ — School-core demo — tier-1 z-score/slope journey passed with satisfaction 100/100.
 - Performance plan and baseline docs audit — checked API performance goal, reference semantics, optional peer policy, and Full-track baseline recorded.
 - T1 — CMake/CTest signal and minimal public library target — configure, build, and status smoke test passed.

@@ -37,7 +37,7 @@ ctest --test-dir build --output-on-failure
 The example prints:
 
 ```text
-mean=4.50 median=4.00 sample_stddev=2.516611 zscore=1.390759 slope=2.00 midrange=5.00
+mean=4.50 median=4.00 sample_stddev=2.516611 zscore=1.390759 slope=2.00 ztest=2.00 p=0.045500 ci=[96.080072,103.919928] intercept=0.00 correlation=1.00 prediction=10.00 multiple_prediction=-1.00 midrange=5.00
 ```
 
 Use `BUILD_SHARED_LIBS=ON` for a shared build; the default is a static library.
@@ -214,6 +214,38 @@ slope = sum((xᵢ - x̄) * (yᵢ - ȳ)) / sum((xᵢ - x̄)^2)
 ```
 
 A zero standard deviation makes a z-score undefined. A constant predictor array makes a slope undefined. Both cases return `HM_STATUS_UNDEFINED` without writing the output.
+
+## Inferential and regression extensions
+
+Known-population-standard-deviation z-tests are available for one or two sample means:
+
+```c
+hm_ztest_result result;
+hm_ztest_one_sample(
+    104.0, 100.0, 10.0, 25,
+    HM_ALTERNATIVE_TWO_SIDED,
+    &result
+);
+/* result.z_score == 2.0; result.p_value ~= 0.0455 */
+```
+
+Known-σ confidence intervals use a confidence fraction such as `0.95`:
+
+```c
+hm_confidence_interval interval;
+hm_mean_confidence_interval(100.0, 10.0, 25, 0.95, &interval);
+```
+
+Simple regression exposes `hm_slope`, `hm_intercept`, `hm_correlation`, and `hm_predict`. Multiple regression accepts a row-major predictor matrix with an automatic intercept:
+
+```c
+/* predictors contains rows * predictor_count values. */
+double coefficients[3];
+hm_multiple_regression_fit(predictors, rows, 2, responses, coefficients);
+hm_multiple_predict(coefficients, 2, new_predictors, &prediction);
+```
+
+Multiple-regression coefficients are ordered as `[intercept, beta_1, ..., beta_p]`. Rank-deficient matrices and mathematically undefined results return `HM_STATUS_UNDEFINED`. This is an educational small-matrix API, not a replacement for a general numerical modeling package.
 
 ## Defining a custom statistic
 

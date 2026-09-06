@@ -31,12 +31,27 @@ int main(void)
     const double values[] = {2.0, 4.0, 4.0, 8.0};
     const double predictor[] = {1.0, 2.0, 3.0, 4.0};
     const double response[] = {2.0, 4.0, 6.0, 8.0};
+    const double multiple_predictors[] = {
+        1.0, 0.0,
+        0.0, 1.0,
+        2.0, 1.0,
+        1.0, 2.0
+    };
+    const double multiple_responses[] = {7.0, 2.0, 6.0, 1.0};
+    const double prediction_row[] = {3.0, 4.0};
     double mean;
     double median;
     double sample_stddev;
     double zscore;
     double slope;
+    double intercept;
+    double correlation;
+    double prediction;
+    double coefficients[3];
+    double multiple_prediction;
     double midrange_result;
+    hm_ztest_result ztest;
+    hm_confidence_interval interval;
     hm_status status;
     hm_statistic_fn custom_statistic = midrange;
 
@@ -60,12 +75,46 @@ int main(void)
     if (status != HM_STATUS_OK) {
         return report_failure("slope", status);
     }
+    status = hm_ztest_one_sample(104.0, 100.0, 10.0, 25,
+                                 HM_ALTERNATIVE_TWO_SIDED, &ztest);
+    if (status != HM_STATUS_OK) {
+        return report_failure("one-sample z-test", status);
+    }
+    status = hm_mean_confidence_interval(100.0, 10.0, 25, 0.95, &interval);
+    if (status != HM_STATUS_OK) {
+        return report_failure("confidence interval", status);
+    }
+    status = hm_intercept(predictor, response, 4, &intercept);
+    if (status != HM_STATUS_OK) {
+        return report_failure("intercept", status);
+    }
+    status = hm_correlation(predictor, response, 4, &correlation);
+    if (status != HM_STATUS_OK) {
+        return report_failure("correlation", status);
+    }
+    status = hm_predict(5.0, intercept, slope, &prediction);
+    if (status != HM_STATUS_OK) {
+        return report_failure("simple prediction", status);
+    }
+    status = hm_multiple_regression_fit(
+        multiple_predictors, 4, 2, multiple_responses, coefficients);
+    if (status != HM_STATUS_OK) {
+        return report_failure("multiple regression", status);
+    }
+    status = hm_multiple_predict(coefficients, 2, prediction_row, &multiple_prediction);
+    if (status != HM_STATUS_OK) {
+        return report_failure("multiple prediction", status);
+    }
     status = custom_statistic(values, 4, &midrange_result);
     if (status != HM_STATUS_OK) {
         return report_failure("custom midrange", status);
     }
 
-    printf("mean=%.2f median=%.2f sample_stddev=%.6f zscore=%.6f slope=%.2f midrange=%.2f\n",
-           mean, median, sample_stddev, zscore, slope, midrange_result);
+    printf("mean=%.2f median=%.2f sample_stddev=%.6f zscore=%.6f slope=%.2f "
+           "ztest=%.2f p=%.6f ci=[%.6f,%.6f] intercept=%.2f correlation=%.2f "
+           "prediction=%.2f multiple_prediction=%.2f midrange=%.2f\n",
+           mean, median, sample_stddev, zscore, slope,
+           ztest.z_score, ztest.p_value, interval.lower, interval.upper,
+           intercept, correlation, prediction, multiple_prediction, midrange_result);
     return 0;
 }

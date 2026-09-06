@@ -74,7 +74,16 @@ Keep future areas independent and discoverable:
 5. Include the header from `harvard_math.h` only when it is part of the supported umbrella API.
 6. Update README/API documentation and the install/export rules if a new public artifact is introduced.
 
-The school core currently includes z-score and ordinary least-squares slope. Streaming accumulators should be a separate module and type when needed; they should not complicate the simple batch calls.
+The school core currently includes z-score and ordinary least-squares slope. The inferential extension adds known-σ one/two-sample z-tests, p-values, known-σ mean intervals, simple-regression intercept/correlation/prediction, and a small row-major multiple-regression solver. It deliberately does not promise t-tests, unknown-σ intervals, coefficient standard errors, or robust/high-condition-number modeling.
+
+## Inferential and regression modules
+
+- `analysis.h` owns alternative hypotheses, z-test result structs, p-values, and known-σ confidence intervals.
+- `regression.h` owns simple paired-data statistics plus intercept-first multiple-regression fit/prediction.
+- `HM_STATUS_UNDEFINED` identifies zero denominators, constant predictors, singular matrices, and non-finite computed results; malformed arguments retain `HM_STATUS_INVALID_ARGUMENT`.
+- Multiple regression adds an intercept automatically and accepts row-major predictor data. Its educational partial-pivot solver is intentionally bounded in scope.
+
+Streaming accumulators should be a separate module and type when needed; they should not complicate the simple batch calls.
 
 ## Build and packaging
 
