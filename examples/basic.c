@@ -41,6 +41,8 @@ int main(void)
     const double prediction_row[] = {3.0, 4.0};
     double mean;
     double median;
+    double q1;
+    double q3;
     double sample_stddev;
     double zscore;
     double slope;
@@ -62,6 +64,14 @@ int main(void)
     status = hm_median(values, 4, &median);
     if (status != HM_STATUS_OK) {
         return report_failure("median", status);
+    }
+    status = hm_quantile(values, 4, 0.25, &q1);
+    if (status != HM_STATUS_OK) {
+        return report_failure("first quartile", status);
+    }
+    status = hm_quantile(values, 4, 0.75, &q3);
+    if (status != HM_STATUS_OK) {
+        return report_failure("third quartile", status);
     }
     status = hm_stddev_sample(values, 4, &sample_stddev);
     if (status != HM_STATUS_OK) {
@@ -110,10 +120,11 @@ int main(void)
         return report_failure("custom midrange", status);
     }
 
-    printf("mean=%.2f median=%.2f sample_stddev=%.6f zscore=%.6f slope=%.2f "
-           "ztest=%.2f p=%.6f ci=[%.6f,%.6f] intercept=%.2f correlation=%.2f "
-           "prediction=%.2f multiple_prediction=%.2f midrange=%.2f\n",
-           mean, median, sample_stddev, zscore, slope,
+    printf("mean=%.2f q1=%.2f median=%.2f q3=%.2f sample_stddev=%.6f "
+           "zscore=%.6f slope=%.2f ztest=%.2f p=%.6f ci=[%.6f,%.6f] "
+           "intercept=%.2f correlation=%.2f prediction=%.2f "
+           "multiple_prediction=%.2f midrange=%.2f\n",
+           mean, q1, median, q3, sample_stddev, zscore, slope,
            ztest.z_score, ztest.p_value, interval.lower, interval.upper,
            intercept, correlation, prediction, multiple_prediction, midrange_result);
     return 0;

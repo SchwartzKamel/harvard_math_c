@@ -37,7 +37,7 @@ ctest --test-dir build --output-on-failure
 The example prints:
 
 ```text
-mean=4.50 median=4.00 sample_stddev=2.516611 zscore=1.390759 slope=2.00 ztest=2.00 p=0.045500 ci=[96.080072,103.919928] intercept=0.00 correlation=1.00 prediction=10.00 multiple_prediction=-1.00 midrange=5.00
+mean=4.50 q1=3.50 median=4.00 q3=5.00 sample_stddev=2.516611 zscore=1.390759 slope=2.00 ztest=2.00 p=0.045500 ci=[96.080072,103.919928] intercept=0.00 correlation=1.00 prediction=10.00 multiple_prediction=-1.00 midrange=5.00
 ```
 
 Use `BUILD_SHARED_LIBS=ON` for a shared build; the default is a static library.
@@ -177,6 +177,7 @@ All statistic functions return `hm_status` and write their result to `double *ou
 | `hm_min` / `hm_max` | Smallest / largest value | 1 |
 | `hm_range` | `max - min` | 1 |
 | `hm_median` | Middle value, averaging the two middle values when needed | 1 |
+| `hm_quantile` | Linearly interpolated order statistic for `q` in `[0,1]` | 1 |
 | `hm_variance_population` | Squared deviations divided by `n` | 1 |
 | `hm_variance_sample` | Squared deviations divided by `n - 1` | 2 |
 | `hm_stddev_population` | Square root of population variance | 1 |
@@ -214,6 +215,21 @@ slope = sum((xᵢ - x̄) * (yᵢ - ȳ)) / sum((xᵢ - x̄)^2)
 ```
 
 A zero standard deviation makes a z-score undefined. A constant predictor array makes a slope undefined. Both cases return `HM_STATUS_UNDEFINED` without writing the output.
+
+## Quantiles and quartiles
+
+`hm_quantile` uses `h=(n-1)q` linear interpolation. Use `q=0.25`, `0.50`, and `0.75` for Q1, the median convention, and Q3:
+
+```c
+double q1;
+double median;
+double q3;
+hm_quantile(values, count, 0.25, &q1);
+hm_quantile(values, count, 0.50, &median);
+hm_quantile(values, count, 0.75, &q3);
+```
+
+The input remains unchanged. Pass a fraction rather than a percentile number: use `0.75`, not `75`.
 
 ## Inferential and regression extensions
 

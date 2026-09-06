@@ -151,8 +151,8 @@
 - **files/areas:** `README.md`, `docs/design.md`, `examples/basic.c`, `tests/package_consumer/main.c`, `tests/package_consumer/`
 - **validation:** `make test && make package-test && cmake --build build --target harvard_math_example && ./build/examples/harvard_math_example`
 - **acceptance:** README/design explain q fractions and quartile calls; example and installed consumer exercise Q1/median/Q3; benchmark output includes quantile rows.
-- **status:** pending
-- **notes:** Keep alternate definitions, weighted quantiles, and sketches out of this slice.
+- **status:** done
+- **notes:** Added q-fraction/interpolation docs, Q1/Q3 example and installed-consumer checks, and quantile output to the school demo. Exact validation passed without compiler warnings.
 
 ## Later (backlog)
 - Add covariance as the next paired-data capability, reusing the centered summary.
@@ -193,8 +193,8 @@
 - **files/areas:** `include/harvard_math/stats.h`, `src/stats.c`, `tests/`, `bench/`, `examples/basic.c`, `README.md`, installed package
 - **validation:** `make clean && make test && make benchmark && make package-test && cmake --build build --target harvard_math_example && ./build/examples/harvard_math_example`
 - **acceptance:** Quantile correctness and benchmark rows pass, Q1/median/Q3 are visible in docs/example/consumer, and the tier-1 quantile journey is satisfied.
-- **status:** pending
-- **notes:**
+- **status:** done
+- **notes:** CTest, Q1/Q3 benchmark rows, installed consumer, and example output passed; measured Q1/Q3 speedups were recorded in the plan and CSV.
 
 ## Done
 - Plan and requirements artifacts — goal, API defaults, scope, acceptance checks, and holdout journey recorded.
@@ -212,6 +212,8 @@
 - T16 — Educational multiple regression — intercept-first fit, prediction, singular-matrix, and input-boundary tests passed.
 - T17 — Inferential/regression documentation/example — README, design docs, installed consumer, and example validated.
 - T18 — Checked quantiles — interpolation semantics, boundary tests, and Q1/Q3 benchmark rows passed.
+- T19 — Quantile documentation/example — Q-fraction docs, installed consumer, and warning-free example passed.
+- QZ — Quantile demo — tier-1 Q1/median/Q3 journey passed with satisfaction 100/100.
 - IZ — Inferential/regression demo — tier-1 z-test/interval/regression journey passed with satisfaction 100/100.
 - SZ — School-core demo — tier-1 z-score/slope journey passed with satisfaction 100/100.
 - Performance plan and baseline docs audit — checked API performance goal, reference semantics, optional peer policy, and Full-track baseline recorded.

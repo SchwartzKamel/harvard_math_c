@@ -60,6 +60,7 @@ Population and sample estimators are separate API names so a caller does not nee
 - population variance: `sum((x - mean)^2) / n`
 - sample variance: `sum((x - mean)^2) / (n - 1)`; at least two values are required
 - population/sample standard deviation: the square root of the corresponding variance
+- quantile: with `h=(n-1)q`, interpolate between the order statistics at `floor(h)` and `ceil(h)`; `q` is a fraction from 0 through 1
 
 Variance uses a centered two-pass double fast path: the first pass validates and accumulates offsets from the first value, and the second pass accumulates centered squares. Centering avoids the large-common-offset failure mode of a naïve raw-sum formula while keeping the hot path vectorization-friendly. If a shifted value or offset sum overflows `double`, the implementation falls back to an extended-precision recurrence.
 
