@@ -54,8 +54,8 @@
 - **files/areas:** installed package and `tests/package_consumer/`
 - **validation:** `rm -rf /tmp/harvard_math-prefix /tmp/harvard_math-consumer && cmake --install build --prefix /tmp/harvard_math-prefix && cmake -S tests/package_consumer -B /tmp/harvard_math-consumer -G Ninja -DCMAKE_PREFIX_PATH=/tmp/harvard_math-prefix && cmake --build /tmp/harvard_math-consumer && ctest --test-dir /tmp/harvard_math-consumer --output-on-failure`
 - **acceptance:** The external consumer completes the spec's smallest end-to-end demo path and exits 0 with expected output.
-- **status:** pending
-- **notes:**
+- **status:** done
+- **notes:** Final tier-1 demo passed: temporary-prefix install, separate Ninja CMake consumer configure/build/CTest, and executable output all matched the expected journey. `make install PREFIX=/tmp/harvard_math-make-prefix` also installed the archive, headers, CMake package, and pkg-config file.
 
 ## Done
 - Plan and requirements artifacts — goal, API defaults, scope, acceptance checks, and holdout journey recorded.
@@ -64,6 +64,7 @@
 - T3 — Install/export/pkg-config integration and external consumer — temporary-prefix install and separate Ninja consumer passed.
 - T4 — Documentation, layout guide, and runnable example — Ninja configure/build and example execution passed.
 - T5 — Make convenience wrapper — `make clean && make test && make example && make package-test` passed.
+- TZ — External installed-consumer demo — tier-1 scenario scored 100/100; deterministic CTest and executable output passed.
 
 ---
 
