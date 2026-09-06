@@ -189,7 +189,7 @@
 - **status:** done
 - **notes:** CTest, installed consumer, and example output all passed; the example prints the documented z-test, p-value, confidence interval, simple regression, and multiple-regression values.
 
-### QZ — Quantile demo validation (required before Ship/Handoff)
+### QZ — Quantile demo validation (completed)
 - **files/areas:** `include/harvard_math/stats.h`, `src/stats.c`, `tests/`, `bench/`, `examples/basic.c`, `README.md`, installed package
 - **validation:** `make clean && make test && make benchmark && make package-test && cmake --build build --target harvard_math_example && ./build/examples/harvard_math_example`
 - **acceptance:** Quantile correctness and benchmark rows pass, Q1/median/Q3 are visible in docs/example/consumer, and the tier-1 quantile journey is satisfied.
