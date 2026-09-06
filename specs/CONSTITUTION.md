@@ -4,14 +4,15 @@
 
 ## Principles
 1. **Code quality** — Keep the public surface small and explicit. Use C99, `hm_`-prefixed symbols, const-correct inputs, documented ownership, and status-returning APIs for recoverable errors. Keep implementation details private to `src/`.
-2. **Testing** — Every public statistic has normal and boundary/error coverage. CMake/CTest is the canonical validation path, and at least one test consumes the library through its installed package interface.
+2. **Testing** — Every public statistic has normal and boundary/error coverage. CMake/CTest is the canonical validation path, at least one test consumes the library through its installed package interface, and performance claims require a correctness-checked reproducible benchmark.
 3. **Security & privacy** — Perform pointer/count validation before dereferencing, never read or write outside caller-provided ranges, never use global mutable state, and never perform I/O or log caller data.
 4. **UX & consistency** — A caller can include `<harvard_math/harvard_math.h>`, pass a `const double` array and its length, and receive a clear `hm_status`. All custom statistics use the same function signature as built-ins.
-5. **Performance** — Common descriptive statistics are O(n) and use O(1) additional storage. Median may use an O(n) copy and O(n log n) sort because it must not mutate caller data. Do not add external runtime dependencies.
+5. **Performance** — Common descriptive statistics are O(n) and use O(1) additional storage. Median may use an O(n) copy and O(n log n) sort because it must not mutate caller data. Optimize the checked API before considering unsafe alternatives, and report machine-specific measurements with their build conditions. Do not add external runtime dependencies.
 
 ## Non-negotiables
 - The public API must not invoke undefined behavior for documented invalid inputs; it returns an error status instead.
 - Sample and population formulas must remain separate and explicitly named.
+- `-ffast-math` must not become a default build setting when the API promises finite-input validation.
 - Any new public symbol must be documented and covered by a deterministic test.
 
 ## Tech constraints

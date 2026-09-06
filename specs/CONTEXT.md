@@ -11,6 +11,10 @@
 | Status | The explicit result code returned by a public operation. | `hm_status` | A floating-point sentinel value. |
 | Public header | An installed header intended for consumers. | `include/harvard_math/*.h` | A private header under `src/`. |
 | Install tree | The files produced by `cmake --install` for downstream consumers. | `CMAKE_INSTALL_PREFIX` | The in-tree build directory. |
+| Reference implementation | A deliberately straightforward same-contract implementation used as a performance and result baseline. | `reference` | A universal mathematical oracle. |
+| Benchmark | A repeatable timed measurement that first checks result equivalence. | `benchmark` | A correctness test or a universal performance guarantee. |
+| Speedup | Reference time divided by library time; values above 1.0 mean the library was faster in that run. | `speedup` | A causal claim about every machine. |
+| Peer implementation | An established external library with an adapter that reconciles API semantics before comparison. | `peer` | The handwritten reference. |
 
 ## Avoid (non-canonical aliases)
 
@@ -21,4 +25,4 @@
 
 ## Open questions
 
-None for the initial scaffold. Streaming, weighted, and inferential statistics are later extensions, not part of this slice.
+Streaming, weighted, and inferential statistics are later extensions. The performance pass compares the checked batch API against a reference and optional peer implementations.

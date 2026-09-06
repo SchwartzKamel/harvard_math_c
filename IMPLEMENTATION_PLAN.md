@@ -1,11 +1,12 @@
 # Implementation plan
 
-> Standard-track plan for the importable `harvard_math` C library scaffold. One task advances per iteration.
+> Full-track performance plan for the completed importable `harvard_math` C library. One task advances per iteration.
 
 ## Convergence
 - **Satisfaction threshold:** 95 — overall holdout-scenario score required before handoff.
-- **Stratified order:** tier 1 installed-consumer journey first; deterministic checks remain the hard gate.
-- **Scenarios:** `scenarios/import-and-use.yaml` (holdout; do not read during implementation).
+- **Stratified order:** tier 1 benchmark journey first; deterministic correctness and benchmark checks remain hard gates.
+- **Scenarios:** `scenarios/performance-benchmark.yaml` (holdout; do not read during implementation).
+- **Performance contract:** optimize the checked public API; do not trade away validation, numerical semantics, or input immutability.
 
 ## Now (next up)
 
@@ -46,16 +47,60 @@
 - **status:** done
 - **notes:** Make targets passed with Ninja, including an installed external consumer; build-tree patterns now remain ignored.
 
+### T6 — Establish the correctness-checked benchmark harness and handwritten baseline
+- **files/areas:** `bench/`, `CMakeLists.txt`, `Makefile`, `README.md`
+- **validation:** `make clean && make benchmark`
+- **acceptance:** A no-dependency benchmark builds with CMake/Ninja, runs deterministic finite datasets, compares the checked library API with a same-contract handwritten C reference before timing, reports operation/input/build metadata and relative speedup, and exits non-zero on a result mismatch.
+- **scenarios/tier:** `performance-benchmark`, tier 1.
+- **status:** pending
+- **notes:** First performance-specific backpressure signal; GSL remains optional.
+
+### T7 — Remove avoidable passes and expensive arithmetic from linear checked statistics
+- **files/areas:** `src/stats.c`, `tests/test_stats.c`, `bench/`
+- **validation:** `make test && make benchmark`
+- **acceptance:** Sum, mean, min, max, range, variance, and standard deviation preserve the existing status/numeric contract while their optimized finite-input paths meet the benchmark's documented 10% reference tolerance on the benchmark host.
+- **status:** pending
+- **notes:** Candidate changes include fusing validation with computation and replacing unnecessarily slow arithmetic only where correctness tests support it.
+
+### T8 — Benchmark and optimize median with equivalent copy/sort semantics
+- **files/areas:** `src/stats.c`, `tests/test_stats.c`, `bench/`
+- **validation:** `make test && make benchmark`
+- **acceptance:** Median remains non-mutating and numerically correct; the chosen implementation is measured against a reference that performs the same required copy/sort work, and any algorithm change is kept only if it improves the documented benchmark cases.
+- **status:** pending
+- **notes:** Compare `qsort` with selection/insertion alternatives before changing the implementation.
+
+### T9 — Add an optional GSL peer adapter and semantic comparison
+- **files/areas:** `bench/`, `CMakeLists.txt`, `Makefile`, `docs/design.md`
+- **validation:** `make benchmark` without GSL, plus `make benchmark GSL=ON` on a host with GSL installed
+- **acceptance:** The default build remains dependency-free and identifies GSL as unavailable when absent; when enabled, the adapter compares only matching operations and records GSL's stride, sample-variance, direct-return, and sorted-median semantics.
+- **status:** pending
+- **notes:** Current host does not expose `gsl-config`; optional peer validation must be explicit rather than silently skipped.
+
+### T10 — Publish reproducible performance methodology and results
+- **files/areas:** `README.md`, `docs/design.md`, `bench/`
+- **validation:** `make benchmark && /home/lafia/.agents/skills/wgm/scripts/check-docs.sh .`
+- **acceptance:** README shows the benchmark command, machine/compiler/flags, dataset sizes, repetitions/warmups, correctness tolerance, handwritten/GSL comparison limits, and a clearly labeled result snapshot.
+- **status:** pending
+- **notes:** Results must be regenerated rather than presented as universal claims.
+
 ## Later (backlog)
 - Add streaming accumulators as a separate API only when a real caller needs data that cannot fit in a batch.
 - Add weighted/quantile/correlation modules behind new public headers with their own formula and edge-case contracts.
+- Add architecture-specific SIMD dispatch only after scalar benchmark limits and portability policy are settled.
 
-### TZ — Demo validation (required before Ship/Handoff)
+### TZ — Demo validation (completed scaffold)
 - **files/areas:** installed package and `tests/package_consumer/`
 - **validation:** `rm -rf /tmp/harvard_math-prefix /tmp/harvard_math-consumer && cmake --install build --prefix /tmp/harvard_math-prefix && cmake -S tests/package_consumer -B /tmp/harvard_math-consumer -G Ninja -DCMAKE_PREFIX_PATH=/tmp/harvard_math-prefix && cmake --build /tmp/harvard_math-consumer && ctest --test-dir /tmp/harvard_math-consumer --output-on-failure`
-- **acceptance:** The external consumer completes the spec's smallest end-to-end demo path and exits 0 with expected output.
+- **acceptance:** The external consumer completes the scaffold spec's smallest end-to-end demo path and exits 0 with expected output.
 - **status:** done
-- **notes:** Final tier-1 demo passed: temporary-prefix install, separate Ninja CMake consumer configure/build/CTest, and executable output all matched the expected journey. `make install PREFIX=/tmp/harvard_math-make-prefix` also installed the archive, headers, CMake package, and pkg-config file.
+- **notes:** Final tier-1 install demo passed before this performance pass.
+
+### PZ — Performance demo validation (required before Ship/Handoff)
+- **files/areas:** `bench/`, `README.md`, `Makefile`, optimized library, optional GSL adapter
+- **validation:** `make clean && make test && make benchmark`
+- **acceptance:** Correctness-checked benchmark output is reproducible, the safe library meets the performance contract against the handwritten reference, and the README explains how to reproduce and interpret the comparison.
+- **status:** pending
+- **notes:** Run optional GSL comparison separately when the dependency is available; do not turn its absence into a default-build failure.
 
 ## Done
 - Plan and requirements artifacts — goal, API defaults, scope, acceptance checks, and holdout journey recorded.

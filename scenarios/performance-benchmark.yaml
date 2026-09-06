@@ -1,0 +1,14 @@
+name: performance-benchmark
+description: Run a reproducible checked-API comparison against a handwritten C reference.
+tier: 1
+target:
+  kind: cli
+  start: make benchmark
+setup:
+  - A C99 compiler, CMake, and Ninja are installed.
+  - The benchmark is run from a clean checkout with no GSL installation required.
+steps:
+  - action: Run the documented benchmark command.
+    expect: The command builds and reports correctness-checked timing rows for the library and handwritten C reference across the initial descriptive statistics.
+  - action: Inspect the benchmark summary and README methodology.
+    expect: The output identifies the dataset size, compiler/build settings, repetitions, relative speedup, and the limits of machine-specific performance claims.
