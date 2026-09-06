@@ -1,0 +1,13 @@
+name: quantile
+description: Compute quartiles through the checked public API and compare the implementation with its reference benchmark.
+tier: 1
+target:
+  kind: cli
+  start: make benchmark
+setup:
+  - The repository is configured with examples and benchmarks enabled.
+steps:
+  - action: Run the documented benchmark command.
+    expect: The benchmark includes quantile correctness and timing rows and writes machine-readable CSV output.
+  - action: Inspect the README quartile example and installed public header.
+    expect: Q1, median, and Q3 use q values 0.25, 0.50, and 0.75, and the caller's input remains unchanged.

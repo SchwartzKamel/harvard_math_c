@@ -18,6 +18,7 @@
 | Z-score | A standardized scalar value computed as `(value - mean) / stddev`. | `hm_zscore` | A z-test statistic. |
 | Slope | The ordinary least-squares slope of paired response values against predictor values. | `hm_slope` | An intercept, correlation, or prediction. |
 | Undefined result | A mathematically requested result with no finite definition for the supplied inputs. | `HM_STATUS_UNDEFINED` | A malformed pointer or non-finite input. |
+| Quantile | An order-statistic fraction from 0 through 1 using `h=(n-1)q` linear interpolation. | `hm_quantile` | A percentile number from 0 through 100 or a weighted quantile. |
 | Alternative | The tail direction used by a hypothesis test. | `hm_alternative` | A confidence level. |
 | P-value | The normal-tail probability associated with a z statistic and alternative. | `p_value` | A confidence interval bound. |
 | Confidence interval | An estimated lower/upper range using a known population standard deviation and confidence fraction. | `hm_confidence_interval` | A prediction interval. |
@@ -34,4 +35,4 @@
 
 ## Open questions
 
-Streaming, weighted, and inferential statistics are later extensions. The performance pass compares the checked batch API against a reference and optional peer implementations. The school-core slice adds z-score and ordinary least-squares slope without adding hypothesis tests or a full regression model. The inferential-regression slice adds known-σ z-tests/intervals and educational simple/multiple regression APIs, not a general statistical modeling system.
+Streaming, weighted, and inferential statistics are later extensions. The performance pass compares the checked batch API against a reference and optional peer implementations. The school-core slice adds z-score and ordinary least-squares slope without adding hypothesis tests or a full regression model. The inferential-regression slice adds known-σ z-tests/intervals and educational simple/multiple regression APIs, not a general statistical modeling system. The quantile slice uses one explicit interpolation convention before weighted, streaming, or approximate variants are considered.

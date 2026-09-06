@@ -5,7 +5,7 @@
 ## Convergence
 - **Satisfaction threshold:** 95 — overall holdout-scenario score required before handoff.
 - **Stratified order:** tier 1 benchmark journey first; deterministic correctness and benchmark checks remain hard gates.
-- **Scenarios:** `scenarios/performance-benchmark.yaml`, `scenarios/school-core.yaml`, and `scenarios/inferential-regression.yaml` (holdouts; do not read during implementation).
+- **Scenarios:** `scenarios/performance-benchmark.yaml`, `scenarios/school-core.yaml`, `scenarios/inferential-regression.yaml`, and `scenarios/quantile.yaml` (holdouts; do not read during implementation).
 - **Performance contract:** optimize the checked public API; do not trade away validation, numerical semantics, or input immutability.
 - **School-core contract:** add z-score and ordinary least-squares slope without expanding into hypothesis tests or a full regression model.
 - **Inferential/regression contract:** add known-σ z-tests/intervals and educational simple/multiple regression with explicit singular-case statuses; do not promise a general modeling solver.
@@ -139,7 +139,24 @@
 - **status:** done
 - **notes:** README/design docs, example, and installed consumer now cover all added school inference/regression APIs. The exact validation command passed with the documented z-test, p-value, confidence interval, simple prediction, and multiple prediction output.
 
+### T18 — Add checked quantile support
+- **files/areas:** `include/harvard_math/stats.h`, `src/stats.c`, `tests/test_stats.c`, `bench/`
+- **validation:** `make test && make benchmark`
+- **acceptance:** `hm_quantile` implements the documented `h=(n-1)q` interpolation, preserves input, rejects invalid q/non-finite/empty input explicitly, and benchmark/reference results agree before timing.
+- **scenarios/tier:** `quantile`, tier 1.
+- **status:** pending
+- **notes:** Reuse guarded copy/selection mechanics without changing existing median semantics.
+
+### T19 — Document and install the quantile capability
+- **files/areas:** `README.md`, `docs/design.md`, `examples/basic.c`, `tests/package_consumer/main.c`, `tests/package_consumer/`
+- **validation:** `make test && make package-test && cmake --build build --target harvard_math_example && ./build/examples/harvard_math_example`
+- **acceptance:** README/design explain q fractions and quartile calls; example and installed consumer exercise Q1/median/Q3; benchmark output includes quantile rows.
+- **status:** pending
+- **notes:** Keep alternate definitions, weighted quantiles, and sketches out of this slice.
+
 ## Later (backlog)
+- Add covariance as the next paired-data capability, reusing the centered summary.
+- Add weighted statistics only after choosing weighted status and normalization contracts.
 - Add streaming accumulators as a separate API only when a real caller needs data that cannot fit in a batch.
 - Add weighted/quantile/correlation modules behind new public headers with their own formula and edge-case contracts.
 - Add architecture-specific SIMD dispatch only after scalar benchmark limits and portability policy are settled.
@@ -165,12 +182,19 @@
 - **status:** done
 - **notes:** CTest, installed package consumer, and example execution passed; output includes the expected z-score and slope.
 
-### IZ — Inferential/regression demo validation (required before Ship/Handoff)
+### IZ — Inferential/regression demo validation (completed)
 - **files/areas:** `include/harvard_math/`, `src/analysis.c`, `src/regression.c`, `tests/`, `examples/basic.c`, `README.md`, installed package
 - **validation:** `make test && make package-test && cmake --build build --target harvard_math_example && ./build/examples/harvard_math_example`
 - **acceptance:** The example and installed consumer exercise z-tests, p-values, confidence intervals, simple regression, and multiple-regression prediction; all deterministic tests pass; the tier-1 inferential/regression journey is satisfied.
 - **status:** done
 - **notes:** CTest, installed consumer, and example output all passed; the example prints the documented z-test, p-value, confidence interval, simple regression, and multiple-regression values.
+
+### QZ — Quantile demo validation (required before Ship/Handoff)
+- **files/areas:** `include/harvard_math/stats.h`, `src/stats.c`, `tests/`, `bench/`, `examples/basic.c`, `README.md`, installed package
+- **validation:** `make clean && make test && make benchmark && make package-test && cmake --build build --target harvard_math_example && ./build/examples/harvard_math_example`
+- **acceptance:** Quantile correctness and benchmark rows pass, Q1/median/Q3 are visible in docs/example/consumer, and the tier-1 quantile journey is satisfied.
+- **status:** pending
+- **notes:**
 
 ## Done
 - Plan and requirements artifacts — goal, API defaults, scope, acceptance checks, and holdout journey recorded.
