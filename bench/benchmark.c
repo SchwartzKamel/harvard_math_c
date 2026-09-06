@@ -40,6 +40,16 @@ struct benchmark_result {
     int has_peer;
 };
 
+static hm_status benchmark_quantile_q1(const double *values, size_t count, double *out)
+{
+    return hm_quantile(values, count, 0.25, out);
+}
+
+static hm_status benchmark_quantile_q3(const double *values, size_t count, double *out)
+{
+    return hm_quantile(values, count, 0.75, out);
+}
+
 static const char *compiler_name(void)
 {
 #if defined(__clang__)
@@ -244,6 +254,8 @@ int main(int argc, char **argv)
         {"max", hm_max, hm_reference_max, PEER(hm_gsl_max)},
         {"range", hm_range, hm_reference_range, PEER(hm_gsl_range)},
         {"median", hm_median, hm_reference_median, PEER(hm_gsl_median)},
+        {"quantile_q1", benchmark_quantile_q1, hm_reference_quantile_q1, PEER(NULL)},
+        {"quantile_q3", benchmark_quantile_q3, hm_reference_quantile_q3, PEER(NULL)},
         {"variance_population", hm_variance_population, hm_reference_variance_population, PEER(NULL)},
         {"variance_sample", hm_variance_sample, hm_reference_variance_sample, PEER(hm_gsl_variance_sample)},
         {"stddev_population", hm_stddev_population, hm_reference_stddev_population, PEER(NULL)},

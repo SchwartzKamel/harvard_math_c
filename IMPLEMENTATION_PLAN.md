@@ -144,8 +144,8 @@
 - **validation:** `make test && make benchmark`
 - **acceptance:** `hm_quantile` implements the documented `h=(n-1)q` interpolation, preserves input, rejects invalid q/non-finite/empty input explicitly, and benchmark/reference results agree before timing.
 - **scenarios/tier:** `quantile`, tier 1.
-- **status:** pending
-- **notes:** Reuse guarded copy/selection mechanics without changing existing median semantics.
+- **status:** done
+- **notes:** Added linearly interpolated q-fraction quantiles using guarded copy/selection, Q1/Q3 benchmark rows, boundary/immutability tests, and correctness-before-timing CSV output. The first benchmark run measured approximately 10x Q1 and 4.7x Q3 versus full-sort reference on 1,048,576 values.
 
 ### T19 — Document and install the quantile capability
 - **files/areas:** `README.md`, `docs/design.md`, `examples/basic.c`, `tests/package_consumer/main.c`, `tests/package_consumer/`
@@ -211,6 +211,7 @@
 - T15 — Simple regression intercept/correlation/prediction — centered formulas and boundary tests passed.
 - T16 — Educational multiple regression — intercept-first fit, prediction, singular-matrix, and input-boundary tests passed.
 - T17 — Inferential/regression documentation/example — README, design docs, installed consumer, and example validated.
+- T18 — Checked quantiles — interpolation semantics, boundary tests, and Q1/Q3 benchmark rows passed.
 - IZ — Inferential/regression demo — tier-1 z-test/interval/regression journey passed with satisfaction 100/100.
 - SZ — School-core demo — tier-1 z-score/slope journey passed with satisfaction 100/100.
 - Performance plan and baseline docs audit — checked API performance goal, reference semantics, optional peer policy, and Full-track baseline recorded.

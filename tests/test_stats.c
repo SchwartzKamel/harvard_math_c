@@ -95,6 +95,14 @@ int main(void)
     CHECK(close_enough(result, 16.0));
     CHECK(hm_median(organ_pipe_values, 33, &result) == HM_STATUS_OK);
     CHECK(close_enough(result, 8.0));
+    /* These checks prove the documented linear-interpolation quantile convention. */
+    CHECK(hm_quantile(values, 4, 0.25, &result) == HM_STATUS_OK);
+    CHECK(close_enough(result, 3.5));
+    CHECK(hm_quantile(values, 4, 0.50, &result) == HM_STATUS_OK);
+    CHECK(close_enough(result, 4.0));
+    CHECK(hm_quantile(values, 4, 0.75, &result) == HM_STATUS_OK);
+    CHECK(close_enough(result, 5.0));
+    CHECK(memcmp(values, original, sizeof values) == 0);
     /* This check proves the selection path also leaves caller storage untouched. */
     for (size_t i = 0; i < 33; ++i) {
         CHECK(sorted_values[i] == (double)i);
@@ -129,6 +137,10 @@ int main(void)
     CHECK(hm_mean(NULL, 0, &result) == HM_STATUS_EMPTY_INPUT);
     CHECK(hm_mean(values, 0, &result) == HM_STATUS_EMPTY_INPUT);
     result = 123.0;
+    CHECK(hm_quantile(values, 4, -0.1, &result) == HM_STATUS_INVALID_ARGUMENT);
+    CHECK(result == 123.0);
+    CHECK(hm_quantile(values, 4, NAN, &result) == HM_STATUS_INVALID_ARGUMENT);
+    CHECK(hm_quantile(nonfinite, 2, 0.5, &result) == HM_STATUS_NONFINITE_INPUT);
     CHECK(hm_mean(nonfinite, 2, &result) == HM_STATUS_NONFINITE_INPUT);
     CHECK(result == 123.0);
     CHECK(hm_variance_population(NULL, 4, &result) == HM_STATUS_INVALID_ARGUMENT);

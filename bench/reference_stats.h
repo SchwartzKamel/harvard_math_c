@@ -9,6 +9,8 @@ hm_status hm_reference_min(const double *values, size_t count, double *out);
 hm_status hm_reference_max(const double *values, size_t count, double *out);
 hm_status hm_reference_range(const double *values, size_t count, double *out);
 hm_status hm_reference_median(const double *values, size_t count, double *out);
+hm_status hm_reference_quantile_q1(const double *values, size_t count, double *out);
+hm_status hm_reference_quantile_q3(const double *values, size_t count, double *out);
 hm_status hm_reference_variance_population(const double *values, size_t count, double *out);
 hm_status hm_reference_variance_sample(const double *values, size_t count, double *out);
 hm_status hm_reference_stddev_population(const double *values, size_t count, double *out);

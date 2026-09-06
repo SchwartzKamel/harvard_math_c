@@ -361,6 +361,57 @@ hm_status hm_median(const double *values, size_t count, double *out)
     return HM_STATUS_OK;
 }
 
+hm_status hm_quantile(const double *values, size_t count, double q, double *out)
+{
+    hm_status status = validate_arguments(values, count, out);
+    double *working;
+    double position;
+    double fraction;
+    double lower_value;
+    double upper_value;
+    size_t lower_index;
+
+    if (status != HM_STATUS_OK) {
+        return status;
+    }
+    if (!isfinite(q) || q < 0.0 || q > 1.0) {
+        return HM_STATUS_INVALID_ARGUMENT;
+    }
+    if (count > (size_t)-1 / sizeof *working) {
+        return HM_STATUS_ALLOCATION_FAILED;
+    }
+    working = malloc(count * sizeof *working);
+    if (working == NULL) {
+        return HM_STATUS_ALLOCATION_FAILED;
+    }
+    for (size_t i = 0; i < count; ++i) {
+        if (!isfinite(values[i])) {
+            free(working);
+            return HM_STATUS_NONFINITE_INPUT;
+        }
+        working[i] = values[i];
+    }
+
+    position = (double)(count - 1) * q;
+    lower_index = (size_t)position;
+    fraction = position - (double)lower_index;
+    select_kth(working, count, lower_index);
+    lower_value = working[lower_index];
+    if (fraction == 0.0) {
+        *out = lower_value;
+        free(working);
+        return HM_STATUS_OK;
+    }
+    select_kth(working, count, lower_index + 1);
+    upper_value = working[lower_index + 1];
+    *out = lower_value * (1.0 - fraction) + upper_value * fraction;
+    free(working);
+    if (!isfinite(*out)) {
+        return HM_STATUS_UNDEFINED;
+    }
+    return HM_STATUS_OK;
+}
+
 hm_status hm_variance_population(const double *values, size_t count, double *out)
 {
     return calculate_variance(values, count, 0, out);

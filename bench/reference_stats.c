@@ -169,6 +169,49 @@ static hm_status reference_variance(const double *values, size_t count, int samp
     return HM_STATUS_OK;
 }
 
+static hm_status reference_quantile(const double *values, size_t count, double q, double *out)
+{
+    hm_status status = validate_values(values, count, out);
+    double *sorted;
+    double position;
+    double fraction;
+    size_t lower_index;
+
+    if (status != HM_STATUS_OK) {
+        return status;
+    }
+    if (!isfinite(q) || q < 0.0 || q > 1.0) {
+        return HM_STATUS_INVALID_ARGUMENT;
+    }
+    sorted = malloc(count * sizeof *sorted);
+    if (sorted == NULL) {
+        return HM_STATUS_ALLOCATION_FAILED;
+    }
+    memcpy(sorted, values, count * sizeof *sorted);
+    qsort(sorted, count, sizeof *sorted, compare_doubles);
+    position = (double)(count - 1) * q;
+    lower_index = (size_t)position;
+    fraction = position - (double)lower_index;
+    if (fraction == 0.0) {
+        *out = sorted[lower_index];
+    } else {
+        *out = sorted[lower_index] * (1.0 - fraction) +
+               sorted[lower_index + 1] * fraction;
+    }
+    free(sorted);
+    return HM_STATUS_OK;
+}
+
+hm_status hm_reference_quantile_q1(const double *values, size_t count, double *out)
+{
+    return reference_quantile(values, count, 0.25, out);
+}
+
+hm_status hm_reference_quantile_q3(const double *values, size_t count, double *out)
+{
+    return reference_quantile(values, count, 0.75, out);
+}
+
 hm_status hm_reference_variance_population(const double *values, size_t count, double *out)
 {
     return reference_variance(values, count, 0, out);
