@@ -11,6 +11,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(HM_BUILD_TESTS "Build harvard_math tests" ON)
 option(HM_BUILD_EXAMPLES "Build harvard_math examples" OFF)
+option(HM_BUILD_BENCHMARKS "Build harvard_math benchmarks" OFF)
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
@@ -96,4 +97,8 @@ endif()
 
 if(HM_BUILD_EXAMPLES)
     add_subdirectory(examples)
+endif()
+
+if(HM_BUILD_BENCHMARKS)
+    add_subdirectory(bench)
 endif()

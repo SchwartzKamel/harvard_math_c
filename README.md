@@ -60,6 +60,18 @@ make BUILD_DIR=build-shared BUILD_SHARED_LIBS=ON test
 make BUILD_DIR=build-make GENERATOR="Unix Makefiles" test
 ```
 
+### Benchmark
+
+Run the dependency-free benchmark comparison with:
+
+```bash
+make benchmark
+```
+
+This builds an optimized Release benchmark, generates one deterministic finite `double` dataset, checks that the library and handwritten C reference produce equivalent results, then prints timings and relative speedups. Machine-readable results are written to `build/benchmark.csv`.
+
+The benchmark is a local measurement, not a universal performance guarantee. It records the compiler, build type, input size, warmups, and repetitions so results can be compared responsibly across machines. Optional GSL comparison support is planned separately; GSL is not required for the default benchmark.
+
 ## Install and import from another CMake project
 
 Install to a prefix:
@@ -177,7 +189,7 @@ Repository engineering references:
 - [`AGENTS.md`](AGENTS.md) — build, validation, and codebase conventions.
 - [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md) — task state for the current scaffold.
 - [`docs/README.md`](docs/README.md) — documentation index.
-- [`docs/design.md`](docs/design.md) — API rationale, algorithms, and extension rules.
+- [`docs/design.md`](docs/design.md) — API rationale, algorithms, extension rules, and benchmark boundaries.
 - [`specs/`](specs/) and [`scenarios/`](scenarios/) — requirements and holdout acceptance journeys.
 
 See [`docs/design.md`](docs/design.md) for the API rationale, error boundaries, algorithms, and rules for adding future statistical modules.

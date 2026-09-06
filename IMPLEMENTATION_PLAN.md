@@ -52,8 +52,8 @@
 - **validation:** `make clean && make benchmark`
 - **acceptance:** A no-dependency benchmark builds with CMake/Ninja, runs deterministic finite datasets, compares the checked library API with a same-contract handwritten C reference before timing, reports operation/input/build metadata and relative speedup, and exits non-zero on a result mismatch.
 - **scenarios/tier:** `performance-benchmark`, tier 1.
-- **status:** pending
-- **notes:** First performance-specific backpressure signal; GSL remains optional.
+- **status:** done
+- **notes:** `make clean && make benchmark` passed in Release mode, `make help` exposes the benchmark target, and `build/benchmark.csv` contains one header plus ten statistic rows. The harness verifies results before timing and keeps GSL optional. Baseline measurements show the current mean/variance implementation is materially slower than the handwritten reference, giving T7 a concrete target.
 
 ### T7 — Remove avoidable passes and expensive arithmetic from linear checked statistics
 - **files/areas:** `src/stats.c`, `tests/test_stats.c`, `bench/`
@@ -104,6 +104,7 @@
 
 ## Done
 - Plan and requirements artifacts — goal, API defaults, scope, acceptance checks, and holdout journey recorded.
+- Performance plan and baseline docs audit — checked API performance goal, reference semantics, optional peer policy, and Full-track baseline recorded.
 - T1 — CMake/CTest signal and minimal public library target — configure, build, and status smoke test passed.
 - T2 — Initial descriptive batch-statistics API — clean build and CTest pass; all declared statistics and error paths covered.
 - T3 — Install/export/pkg-config integration and external consumer — temporary-prefix install and separate Ninja consumer passed.

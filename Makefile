@@ -5,6 +5,8 @@ BUILD_TYPE ?= Debug
 BUILD_SHARED_LIBS ?= OFF
 HM_BUILD_TESTS ?= ON
 HM_BUILD_EXAMPLES ?= ON
+HM_BUILD_BENCHMARKS ?= OFF
+BENCHMARK_BUILD_TYPE ?= Release
 CMAKE ?= cmake
 CTEST ?= ctest
 CMAKE_CONFIGURE_FLAGS ?=
@@ -17,9 +19,10 @@ CMAKE_OPTIONS = \
 	-DBUILD_SHARED_LIBS=$(BUILD_SHARED_LIBS) \
 	-DHM_BUILD_TESTS=$(HM_BUILD_TESTS) \
 	-DHM_BUILD_EXAMPLES=$(HM_BUILD_EXAMPLES) \
+	-DHM_BUILD_BENCHMARKS=$(HM_BUILD_BENCHMARKS) \
 	$(CMAKE_CONFIGURE_FLAGS)
 
-.PHONY: all configure build test example install package-test clean help
+.PHONY: all configure build test example benchmark install package-test clean help
 
 all: build
 
@@ -34,6 +37,11 @@ test: build
 
 example: build
 	"$(BUILD_DIR)/examples/harvard_math_example"
+
+benchmark:
+	$(CMAKE) -S . -B "$(BUILD_DIR)" $(CMAKE_OPTIONS) -DHM_BUILD_BENCHMARKS=ON -DCMAKE_BUILD_TYPE=$(BENCHMARK_BUILD_TYPE)
+	$(CMAKE) --build "$(BUILD_DIR)"
+	"$(BUILD_DIR)/bench/harvard_math_benchmark" --csv "$(BUILD_DIR)/benchmark.csv"
 
 install: build
 	DESTDIR="$(DESTDIR)" $(CMAKE) --install "$(BUILD_DIR)" --prefix "$(PREFIX)"
@@ -53,7 +61,8 @@ help:
 		'make build       Configure with CMake/Ninja and compile the library' \
 		'make test        Build and run CTest' \
 		'make example     Build and run the example' \
+		'make benchmark   Build and run the optimized reference comparison' \
 		'make package-test Install to build/package-prefix and test an external consumer' \
 		'make install     Install using PREFIX=/path (default /usr/local)' \
 		'make clean       Remove the selected build directory' \
-		'Variables: BUILD_DIR, PREFIX, GENERATOR, BUILD_TYPE, BUILD_SHARED_LIBS, CMAKE_CONFIGURE_FLAGS'
+		'Variables: BUILD_DIR, PREFIX, GENERATOR, BUILD_TYPE, BENCHMARK_BUILD_TYPE, BUILD_SHARED_LIBS, CMAKE_CONFIGURE_FLAGS'
