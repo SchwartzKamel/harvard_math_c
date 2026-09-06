@@ -14,8 +14,8 @@
 - **validation:** `cmake -S . -B build -DHM_BUILD_TESTS=ON && cmake --build build && ctest --test-dir build --output-on-failure`
 - **acceptance:** A C99 library target, public umbrella header, implementation translation unit, and executable smoke test configure/build/test successfully with no external dependencies.
 - **scenarios/tier:** Enables the tier-1 installed-consumer journey.
-- **status:** pending
-- **notes:** First deterministic validation signal for the empty repository.
+- **status:** done
+- **notes:** `cmake -S . -B build -DHM_BUILD_TESTS=ON && cmake --build build && ctest --test-dir build --output-on-failure` passed; one status smoke test passed.
 
 ### T2 — Implement the initial descriptive batch-statistics API
 - **files/areas:** `include/harvard_math/stats.h`, `src/stats.c`, `tests/test_stats.c`
@@ -52,6 +52,7 @@
 
 ## Done
 - Plan and requirements artifacts — goal, API defaults, scope, acceptance checks, and holdout journey recorded.
+- T1 — CMake/CTest signal and minimal public library target — configure, build, and status smoke test passed.
 
 ---
 
