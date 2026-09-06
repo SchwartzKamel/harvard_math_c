@@ -1,6 +1,8 @@
 #include <harvard_math/regression.h>
 
+#include <float.h>
 #include <math.h>
+#include <stdlib.h>
 
 struct pair_summary {
     double mean_x;
@@ -218,6 +220,195 @@ hm_status hm_predict(double x_value, double intercept, double slope, double *out
         return HM_STATUS_NONFINITE_INPUT;
     }
     result = intercept + slope * x_value;
+    if (!isfinite(result)) {
+        return HM_STATUS_UNDEFINED;
+    }
+    *out = result;
+    return HM_STATUS_OK;
+}
+
+hm_status hm_multiple_regression_fit(
+    const double *predictors,
+    size_t rows,
+    size_t predictor_count,
+    const double *responses,
+    double *coefficients)
+{
+    size_t coefficient_count;
+    long double *normal;
+    long double *rhs;
+    long double *row;
+    long double matrix_scale = 0.0L;
+    const long double tolerance_multiplier = 1000.0L;
+
+    if (coefficients == NULL || (rows > 0 && (predictors == NULL || responses == NULL))) {
+        return HM_STATUS_INVALID_ARGUMENT;
+    }
+    if (rows == 0) {
+        return HM_STATUS_EMPTY_INPUT;
+    }
+    if (predictor_count == 0) {
+        return HM_STATUS_INVALID_ARGUMENT;
+    }
+    if (predictor_count == (size_t)-1) {
+        return HM_STATUS_INSUFFICIENT_DATA;
+    }
+    coefficient_count = predictor_count + 1;
+    if (rows < coefficient_count) {
+        return HM_STATUS_INSUFFICIENT_DATA;
+    }
+    if (coefficient_count > (size_t)-1 / coefficient_count ||
+        rows > (size_t)-1 / predictor_count) {
+        return HM_STATUS_ALLOCATION_FAILED;
+    }
+
+    normal = calloc(coefficient_count * coefficient_count, sizeof *normal);
+    rhs = calloc(coefficient_count, sizeof *rhs);
+    row = malloc(coefficient_count * sizeof *row);
+    if (normal == NULL || rhs == NULL || row == NULL) {
+        free(normal);
+        free(rhs);
+        free(row);
+        return HM_STATUS_ALLOCATION_FAILED;
+    }
+
+    for (size_t r = 0; r < rows; ++r) {
+        const double response = responses[r];
+
+        if (!isfinite(response)) {
+            free(normal);
+            free(rhs);
+            free(row);
+            return HM_STATUS_NONFINITE_INPUT;
+        }
+        row[0] = 1.0L;
+        for (size_t c = 0; c < predictor_count; ++c) {
+            const double value = predictors[r * predictor_count + c];
+
+            if (!isfinite(value)) {
+                free(normal);
+                free(rhs);
+                free(row);
+                return HM_STATUS_NONFINITE_INPUT;
+            }
+            row[c + 1] = (long double)value;
+        }
+        for (size_t i = 0; i < coefficient_count; ++i) {
+            rhs[i] += row[i] * (long double)response;
+            for (size_t j = 0; j < coefficient_count; ++j) {
+                normal[i * coefficient_count + j] += row[i] * row[j];
+            }
+        }
+    }
+
+    for (size_t i = 0; i < coefficient_count * coefficient_count; ++i) {
+        const long double magnitude = fabsl(normal[i]);
+
+        if (!isfinite((double)magnitude)) {
+            free(normal);
+            free(rhs);
+            free(row);
+            return HM_STATUS_UNDEFINED;
+        }
+        if (magnitude > matrix_scale) {
+            matrix_scale = magnitude;
+        }
+    }
+    if (matrix_scale == 0.0L) {
+        free(normal);
+        free(rhs);
+        free(row);
+        return HM_STATUS_UNDEFINED;
+    }
+
+    for (size_t pivot_column = 0; pivot_column < coefficient_count; ++pivot_column) {
+        size_t pivot_row = pivot_column;
+        long double pivot_magnitude = 0.0L;
+
+        for (size_t r = pivot_column; r < coefficient_count; ++r) {
+            const long double magnitude = fabsl(normal[r * coefficient_count + pivot_column]);
+            if (magnitude > pivot_magnitude) {
+                pivot_magnitude = magnitude;
+                pivot_row = r;
+            }
+        }
+        if (pivot_magnitude <= matrix_scale * LDBL_EPSILON * tolerance_multiplier) {
+            free(normal);
+            free(rhs);
+            free(row);
+            return HM_STATUS_UNDEFINED;
+        }
+        if (pivot_row != pivot_column) {
+            for (size_t c = 0; c < coefficient_count; ++c) {
+                const size_t first = pivot_column * coefficient_count + c;
+                const size_t second = pivot_row * coefficient_count + c;
+                const long double temporary = normal[first];
+                normal[first] = normal[second];
+                normal[second] = temporary;
+            }
+            {
+                const long double temporary = rhs[pivot_column];
+                rhs[pivot_column] = rhs[pivot_row];
+                rhs[pivot_row] = temporary;
+            }
+        }
+        for (size_t r = pivot_column + 1; r < coefficient_count; ++r) {
+            const long double factor = normal[r * coefficient_count + pivot_column] /
+                                       normal[pivot_column * coefficient_count + pivot_column];
+            normal[r * coefficient_count + pivot_column] = 0.0L;
+            for (size_t c = pivot_column + 1; c < coefficient_count; ++c) {
+                normal[r * coefficient_count + c] -= factor *
+                    normal[pivot_column * coefficient_count + c];
+            }
+            rhs[r] -= factor * rhs[pivot_column];
+        }
+    }
+
+    for (size_t i = coefficient_count; i-- > 0;) {
+        long double value = rhs[i];
+
+        for (size_t j = i + 1; j < coefficient_count; ++j) {
+            value -= normal[i * coefficient_count + j] * rhs[j];
+        }
+        rhs[i] = value / normal[i * coefficient_count + i];
+        if (!isfinite((double)rhs[i])) {
+            free(normal);
+            free(rhs);
+            free(row);
+            return HM_STATUS_UNDEFINED;
+        }
+    }
+
+    for (size_t i = 0; i < coefficient_count; ++i) {
+        coefficients[i] = (double)rhs[i];
+    }
+    free(normal);
+    free(rhs);
+    free(row);
+    return HM_STATUS_OK;
+}
+
+hm_status hm_multiple_predict(
+    const double *coefficients,
+    size_t predictor_count,
+    const double *predictors,
+    double *out)
+{
+    double result;
+
+    if (out == NULL || coefficients == NULL || predictors == NULL || predictor_count == 0) {
+        return HM_STATUS_INVALID_ARGUMENT;
+    }
+    if (!isfinite(coefficients[0])) {
+        return HM_STATUS_NONFINITE_INPUT;
+    }
+    result = coefficients[0];
+    for (size_t i = 0; i < predictor_count; ++i) {
+        if (!isfinite(coefficients[i + 1]) || !isfinite(predictors[i])) {
+            return HM_STATUS_NONFINITE_INPUT;
+        }
+        result += coefficients[i + 1] * predictors[i];
+    }
     if (!isfinite(result)) {
         return HM_STATUS_UNDEFINED;
     }

@@ -15,6 +15,24 @@ HM_API hm_status hm_correlation(const double *x, const double *y, size_t count, 
 /* Predict one response from a fitted simple-regression intercept and slope. */
 HM_API hm_status hm_predict(double x_value, double intercept, double slope, double *out);
 
+/*
+ * Fit a row-major predictor matrix with an automatically added intercept.
+ * predictors has rows * predictor_count values; coefficients has predictor_count + 1 values.
+ */
+HM_API hm_status hm_multiple_regression_fit(
+    const double *predictors,
+    size_t rows,
+    size_t predictor_count,
+    const double *responses,
+    double *coefficients);
+
+/* Predict from an intercept-first coefficient vector and one predictor row. */
+HM_API hm_status hm_multiple_predict(
+    const double *coefficients,
+    size_t predictor_count,
+    const double *predictors,
+    double *out);
+
 #ifdef __cplusplus
 }
 #endif

@@ -129,8 +129,8 @@
 - **validation:** `make test`
 - **acceptance:** Row-major predictors fit an intercept-first coefficient vector for full-rank data, predict correctly, and return `HM_STATUS_UNDEFINED` for rank-deficient matrices without mutating inputs.
 - **scenarios/tier:** `inferential-regression`, tier 1.
-- **status:** pending
-- **notes:** Use a checked partial-pivot solver suitable for educational small matrices; document that this is not a high-condition-number general solver.
+- **status:** done
+- **notes:** Added checked row-major multiple-regression fitting with an automatic intercept, partial-pivot elimination, coefficient prediction, rank-deficiency detection, allocation checks, and immutability tests. `make test` passed.
 
 ### T17 — Document and demonstrate inferential/regression extensions
 - **files/areas:** `README.md`, `docs/design.md`, `examples/basic.c`, `tests/package_consumer/main.c`, `tests/package_consumer/`
@@ -185,6 +185,7 @@
 - T13 — School-core documentation/example — README, design docs, installed consumer, and example updated and validated.
 - T14 — Known-σ z-tests and confidence intervals — public analysis module and CTest coverage passed.
 - T15 — Simple regression intercept/correlation/prediction — centered formulas and boundary tests passed.
+- T16 — Educational multiple regression — intercept-first fit, prediction, singular-matrix, and input-boundary tests passed.
 - SZ — School-core demo — tier-1 z-score/slope journey passed with satisfaction 100/100.
 - Performance plan and baseline docs audit — checked API performance goal, reference semantics, optional peer policy, and Full-track baseline recorded.
 - T1 — CMake/CTest signal and minimal public library target — configure, build, and status smoke test passed.

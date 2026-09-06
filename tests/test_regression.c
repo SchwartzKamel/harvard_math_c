@@ -28,8 +28,29 @@ int main(void)
     const double constant_x[] = {3.0, 3.0, 3.0};
     const double constant_y[] = {7.0, 7.0, 7.0};
     const double nonfinite[] = {1.0, NAN};
+    const double predictors[] = {
+        1.0, 0.0,
+        0.0, 1.0,
+        2.0, 1.0,
+        1.0, 2.0
+    };
+    const double responses[] = {7.0, 2.0, 6.0, 1.0};
+    const double singular_predictors[] = {
+        1.0, 1.0,
+        2.0, 2.0,
+        3.0, 3.0
+    };
+    const double singular_responses[] = {3.0, 5.0, 7.0};
+    const double predictors_copy[] = {
+        1.0, 0.0,
+        0.0, 1.0,
+        2.0, 1.0,
+        1.0, 2.0
+    };
+    const double responses_copy[] = {7.0, 2.0, 6.0, 1.0};
     double x_copy[4];
     double y_copy[4];
+    double coefficients[3];
     double result;
 
     memcpy(x_copy, x, sizeof x);
@@ -60,6 +81,26 @@ int main(void)
     CHECK(hm_slope(NULL, y, 4, &result) == HM_STATUS_INVALID_ARGUMENT);
     CHECK(hm_slope(x, y, 4, NULL) == HM_STATUS_INVALID_ARGUMENT);
     CHECK(hm_slope(nonfinite, y, 2, &result) == HM_STATUS_NONFINITE_INPUT);
+
+    /* These checks prove an intercept-first multiple-regression fit and prediction. */
+    CHECK(hm_multiple_regression_fit(predictors, 4, 2, responses, coefficients) == HM_STATUS_OK);
+    CHECK(close_enough(coefficients[0], 5.0));
+    CHECK(close_enough(coefficients[1], 2.0));
+    CHECK(close_enough(coefficients[2], -3.0));
+    CHECK(hm_multiple_predict(coefficients, 2, (double[]){3.0, 4.0}, &result) == HM_STATUS_OK);
+    CHECK(close_enough(result, -1.0));
+    CHECK(memcmp(predictors, predictors_copy, sizeof predictors) == 0);
+    CHECK(memcmp(responses, responses_copy, sizeof responses) == 0);
+
+    /* These checks prove insufficient and rank-deficient matrices are explicit failures. */
+    coefficients[0] = 123.0;
+    CHECK(hm_multiple_regression_fit(predictors, 2, 2, responses, coefficients) == HM_STATUS_INSUFFICIENT_DATA);
+    CHECK(coefficients[0] == 123.0);
+    CHECK(hm_multiple_regression_fit(singular_predictors, 3, 2,
+                                     singular_responses, coefficients) == HM_STATUS_UNDEFINED);
+    CHECK(hm_multiple_regression_fit(NULL, 4, 2, responses, coefficients) == HM_STATUS_INVALID_ARGUMENT);
+    CHECK(hm_multiple_regression_fit(predictors, 4, 2, nonfinite, coefficients) == HM_STATUS_NONFINITE_INPUT);
+    CHECK(hm_multiple_predict(coefficients, 0, predictors, &result) == HM_STATUS_INVALID_ARGUMENT);
 
     return 0;
 }
