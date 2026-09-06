@@ -19,7 +19,7 @@ include(CMakePackageConfigHelpers)
 
 set(HM_INSTALL_CMAKEDIR "${CMAKE_INSTALL_LIBDIR}/cmake/harvard_math")
 
-add_library(harvard_math src/stats.c)
+add_library(harvard_math src/stats.c src/regression.c)
 add_library(harvard_math::harvard_math ALIAS harvard_math)
 
 target_compile_features(harvard_math PUBLIC c_std_99)

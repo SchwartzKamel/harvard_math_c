@@ -2,3 +2,8 @@ add_executable(harvard_math_test test_stats.c)
 target_link_libraries(harvard_math_test PRIVATE harvard_math::harvard_math)
 
 add_test(NAME harvard_math_status_smoke COMMAND harvard_math_test)
+
+add_executable(harvard_math_regression_test test_regression.c)
+target_link_libraries(harvard_math_regression_test PRIVATE harvard_math::harvard_math)
+
+add_test(NAME harvard_math_regression COMMAND harvard_math_regression_test)

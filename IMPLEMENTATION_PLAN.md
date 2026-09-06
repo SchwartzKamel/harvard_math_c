@@ -93,12 +93,12 @@
 - **notes:** Added `HM_STATUS_UNDEFINED` after existing enum values, implemented checked z-score, and covered positive, zero, negative, non-finite, and output-preservation cases. `make test` passed.
 
 ### T12 — Add ordinary least-squares slope support
-- **files/areas:** `include/harvard_math/regression.h`, `include/harvard_math/harvard_math.h`, `src/regression.c`, `CMakeLists.txt`, `tests/test_regression.c`
+- **files/areas:** `include/harvard_math/regression.h`, `include/harvard_math/harvard_math.h`, `src/regression.c`, `CMakeLists.txt`, `tests/CMakeLists.txt`, `tests/test_regression.c`
 - **validation:** `make test`
 - **acceptance:** `hm_slope` computes centered least-squares slope for finite paired arrays, rejects insufficient/constant-x/invalid input with explicit statuses, and does not mutate caller arrays.
 - **scenarios/tier:** `school-core`, tier 1.
-- **status:** pending
-- **notes:** Keep regression code in its own module while making it available from the umbrella header.
+- **status:** done
+- **notes:** Added a separate public regression header/module, centered finite-input implementation with extended fallback, umbrella-header export, and deterministic tests for exact lines, large offsets, constant predictors, insufficient data, invalid pointers, non-finite inputs, and immutability. `make test` passed.
 
 ### T13 — Document and demonstrate the school core
 - **files/areas:** `README.md`, `docs/design.md`, `examples/basic.c`, `examples/CMakeLists.txt`, `tests/package_consumer/`
@@ -142,6 +142,7 @@
 - T10 — Reproducible performance methodology/results — README and design docs updated; benchmark and docs checks passed.
 - PZ — Performance demo — exact `make clean && make test && make benchmark` gate passed with CSV output.
 - T11 — Checked z-score — public API, undefined status, and boundary tests passed.
+- T12 — Checked ordinary least-squares slope — public regression module and CTest coverage passed.
 - Performance plan and baseline docs audit — checked API performance goal, reference semantics, optional peer policy, and Full-track baseline recorded.
 - T1 — CMake/CTest signal and minimal public library target — configure, build, and status smoke test passed.
 - T2 — Initial descriptive batch-statistics API — clean build and CTest pass; all declared statistics and error paths covered.
