@@ -42,7 +42,7 @@ HM_API hm_status hm_min(const double *values, size_t count, double *out);
 HM_API hm_status hm_max(const double *values, size_t count, double *out);
 HM_API hm_status hm_range(const double *values, size_t count, double *out);
 
-/* Median copies before sorting, so the caller's values are never reordered. */
+/* Median copies before selection, so the caller's values are never reordered. */
 HM_API hm_status hm_median(const double *values, size_t count, double *out);
 
 /* Population uses divisor n; sample uses divisor n - 1 and requires count >= 2. */

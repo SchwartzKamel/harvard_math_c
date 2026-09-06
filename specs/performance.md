@@ -7,7 +7,7 @@ As a C programmer choosing a small statistics library, I want the safe public ba
 - `make benchmark` runs without external dependencies and compares `harvard_math` with a handwritten C reference using identical inputs and call semantics.
 - The benchmark reports correctness, per-operation timing, input size, compiler/build mode, and a relative speedup in both human-readable and machine-readable forms.
 - The checked public API keeps its existing error, finite-input, population/sample, and non-mutating-input contracts.
-- Mean, sum, min, max, range, variance, and standard deviation do not perform avoidable extra full-array passes; median is compared using equivalent copy/sort semantics.
+- Mean, sum, min, max, range, variance, and standard deviation do not perform avoidable extra full-array passes; median is compared using equivalent copy, unsorted-input, and immutability semantics.
 - The README contains reproducible benchmark instructions and clearly labels machine-specific results rather than making a universal speed claim.
 - When GSL is available, an optional adapter compares matching operations and documents semantic differences; GSL is not a required runtime or build dependency.
 
@@ -23,7 +23,7 @@ As a C programmer choosing a small statistics library, I want the safe public ba
 |---|---|
 | When `make benchmark` is run on a finite deterministic dataset, the benchmark shall build/run without third-party dependencies and report rows for sum, mean, min, max, range, population/sample variance, population/sample standard deviation, and median. | `make clean && make benchmark` |
 | When a benchmark row is emitted, the runner shall verify the library and reference results within the documented tolerance before reporting timing or speedup. | Benchmark exits non-zero on mismatch; `make benchmark` exits 0. |
-| When the safe API and handwritten reference are compiled with the same optimized C settings, the library's linear statistics shall be no slower than the reference beyond a documented 10% tolerance on the benchmark host, and median shall use an equivalent copy/sort workload. | `make benchmark` machine-readable summary and correctness gate. |
+| When the safe API and handwritten reference are compiled with the same optimized C settings, the library's linear statistics shall be no slower than the reference beyond a documented 10% tolerance on the benchmark host, and median shall compare the same copy, unsorted-input, and immutability workload semantics. | `make benchmark` machine-readable summary and correctness gate. |
 | If the benchmark is run without GSL, the default target shall still pass and identify the optional peer as unavailable rather than failing the build. | `make benchmark` on the current host, where `gsl-config` is unavailable. |
 | When GSL is available, the optional adapter shall compare only semantically matching operations and shall identify stride, sample-variance, status/error, and sorted-median differences in its report. | `make benchmark GSL=ON` on a GSL-enabled host, or compile/configuration check of the adapter. |
 | When invalid, empty, non-finite, and sample-size boundary inputs are tested, the optimization shall preserve the existing status contract and never dereference invalid memory. | `make test` / CTest, including `tests/test_stats.c`. |
@@ -36,7 +36,7 @@ As a C programmer choosing a small statistics library, I want the safe public ba
 
 ## Assumptions
 - “Fastest” means fastest checked implementation under the current public contract, not an unsafe API that assumes valid input.
-- The primary baseline is a same-signature handwritten C implementation with the same validation and equivalent median copy/sort work.
+- The primary baseline is a same-signature handwritten C implementation with the same validation, unsorted input, and non-mutating median semantics; its qsort algorithm is intentionally a straightforward comparison point rather than an identical implementation.
 - A benchmark run uses finite deterministic `double` data, `-O3` (and records whether `-march=native` is enabled), warmups, repeated measurements, and an escaped checksum to prevent dead-code elimination.
 - Results are relative evidence for a named machine/compiler/build, not a promise across all CPUs or compilers.
 - GSL is an optional comparison peer, not a required dependency. Higher-level runtimes such as Python/NumPy and R are not kernel-level peers for this pass.

@@ -56,18 +56,18 @@
 - **notes:** `make clean && make benchmark` passed in Release mode, `make help` exposes the benchmark target, and `build/benchmark.csv` contains one header plus ten statistic rows. The harness verifies results before timing and keeps GSL optional. Baseline measurements show the current mean/variance implementation is materially slower than the handwritten reference, giving T7 a concrete target.
 
 ### T7 — Remove avoidable passes and expensive arithmetic from linear checked statistics
-- **files/areas:** `src/stats.c`, `tests/test_stats.c`, `bench/`
+- **files/areas:** `src/stats.c`, `tests/test_stats.c`, `bench/`, `docs/design.md`
 - **validation:** `make test && make benchmark`
 - **acceptance:** Sum, mean, min, max, range, variance, and standard deviation preserve the existing status/numeric contract while their optimized finite-input paths meet the benchmark's documented 10% reference tolerance on the benchmark host.
-- **status:** pending
-- **notes:** Candidate changes include fusing validation with computation and replacing unnecessarily slow arithmetic only where correctness tests support it.
+- **status:** done
+- **notes:** Fused finite validation with sum/min/max/range and replaced per-element long-double/Welford work with a centered two-pass double path plus an extended-precision overflow fallback. Added release-active checks for invalid pointers, non-finite input after an overflow trigger, and large common offsets. Latest benchmark run met the 10% target for every linear operation; median remains for T8.
 
-### T8 — Benchmark and optimize median with equivalent copy/sort semantics
-- **files/areas:** `src/stats.c`, `tests/test_stats.c`, `bench/`
+### T8 — Benchmark and optimize median with equivalent input semantics
+- **files/areas:** `src/stats.c`, `tests/test_stats.c`, `bench/`, `include/harvard_math/stats.h`, `docs/design.md`
 - **validation:** `make test && make benchmark`
-- **acceptance:** Median remains non-mutating and numerically correct; the chosen implementation is measured against a reference that performs the same required copy/sort work, and any algorithm change is kept only if it improves the documented benchmark cases.
-- **status:** pending
-- **notes:** Compare `qsort` with selection/insertion alternatives before changing the implementation.
+- **acceptance:** Median remains non-mutating and numerically correct; the chosen implementation is measured against a reference with the same validation, unsorted input, and copy semantics, and any algorithm change is kept only if it improves the documented benchmark cases without an adversarial collapse.
+- **status:** done
+- **notes:** Fused validation into the copy, then replaced large-input qsort with median-of-three three-way introselect plus a depth-limited local qsort fallback; small inputs retain qsort. Fuzz, sorted/reverse/duplicate/organ-pipe cases, CTest, and benchmarks passed. Median improved from near parity to roughly 16x on the generated 1,048,576-value workload and avoided the organ-pipe quickselect worst case.
 
 ### T9 — Add an optional GSL peer adapter and semantic comparison
 - **files/areas:** `bench/`, `CMakeLists.txt`, `Makefile`, `docs/design.md`
@@ -104,6 +104,9 @@
 
 ## Done
 - Plan and requirements artifacts — goal, API defaults, scope, acceptance checks, and holdout journey recorded.
+- T6 — Correctness-checked benchmark harness and handwritten baseline — Release benchmark, CSV output, metadata, and pre-timing result checks passed.
+- T7 — Fast checked linear statistics — safe one-pass/fused paths and centered variance passed CTest and met the current benchmark target.
+- T8 — Fast checked median — fused copy/validation and guarded introselect passed adversarial-shape tests and benchmarked well above qsort on the generated large workload.
 - Performance plan and baseline docs audit — checked API performance goal, reference semantics, optional peer policy, and Full-track baseline recorded.
 - T1 — CMake/CTest signal and minimal public library target — configure, build, and status smoke test passed.
 - T2 — Initial descriptive batch-statistics API — clean build and CTest pass; all declared statistics and error paths covered.

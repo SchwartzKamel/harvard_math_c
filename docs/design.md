@@ -51,7 +51,7 @@ On every public operation:
 - The output is written only on success.
 - The caller owns `values`; the library never frees or changes it.
 
-`hm_median` makes a temporary copy before sorting. The other initial statistics use constant additional storage.
+`hm_median` makes a temporary copy before selection. It uses introselect for large inputs and a small-input sort; the caller's values are never reordered. The other initial statistics use constant additional storage.
 
 ## Formula naming
 
@@ -61,7 +61,7 @@ Population and sample estimators are separate API names so a caller does not nee
 - sample variance: `sum((x - mean)^2) / (n - 1)`; at least two values are required
 - population/sample standard deviation: the square root of the corresponding variance
 
-The variance implementation uses Welford's online update while still exposing a batch API. This improves numerical behavior without introducing a stateful public type.
+Variance uses a centered two-pass double fast path: the first pass validates and accumulates offsets from the first value, and the second pass accumulates centered squares. Centering avoids the large-common-offset failure mode of a naïve raw-sum formula while keeping the hot path vectorization-friendly. If a shifted value or offset sum overflows `double`, the implementation falls back to an extended-precision recurrence.
 
 ## Adding a future module
 
