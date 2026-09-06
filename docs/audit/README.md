@@ -1,5 +1,6 @@
 # Documentation audit reports
 
+- 2026-09-06 — **GREEN** — [covariance final](2026-09-06T2026Z_covariance-final.md)
 - 2026-09-06 — **GREEN** — [quantile final](2026-09-06T2016Z_quantile-final.md)
 - 2026-09-06 — **GREEN** — [inferential/regression final](2026-09-06T2006Z_inferential-final.md)
 - 2026-09-06 — **AMBER** — [inferential/regression baseline](2026-09-06T1958Z_inferential-baseline.md)
