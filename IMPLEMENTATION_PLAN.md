@@ -5,7 +5,7 @@
 ## Convergence
 - **Satisfaction threshold:** 95 — overall holdout-scenario score required before handoff.
 - **Stratified order:** tier 1 benchmark journey first; deterministic correctness and benchmark checks remain hard gates.
-- **Scenarios:** `scenarios/performance-benchmark.yaml`, `scenarios/school-core.yaml`, `scenarios/inferential-regression.yaml`, and `scenarios/quantile.yaml` (holdouts; do not read during implementation).
+- **Scenarios:** `scenarios/performance-benchmark.yaml`, `scenarios/school-core.yaml`, `scenarios/inferential-regression.yaml`, `scenarios/quantile.yaml`, and `scenarios/covariance.yaml` (holdouts; do not read during implementation).
 - **Performance contract:** optimize the checked public API; do not trade away validation, numerical semantics, or input immutability.
 - **School-core contract:** add z-score and ordinary least-squares slope without expanding into hypothesis tests or a full regression model.
 - **Inferential/regression contract:** add known-σ z-tests/intervals and educational simple/multiple regression with explicit singular-case statuses; do not promise a general modeling solver.
@@ -154,8 +154,22 @@
 - **status:** done
 - **notes:** Added q-fraction/interpolation docs, Q1/Q3 example and installed-consumer checks, and quantile output to the school demo. Exact validation passed without compiler warnings.
 
+### T20 — Add population/sample covariance
+- **files/areas:** `include/harvard_math/regression.h`, `src/regression.c`, `tests/test_regression.c`
+- **validation:** `make test`
+- **acceptance:** Population/sample covariance reuse centered paired data, preserve inputs, distinguish `n` from `n-1`, and return explicit invalid/insufficient/non-finite statuses.
+- **scenarios/tier:** `covariance`, tier 1.
+- **status:** pending
+- **notes:** Keep zero covariance valid even when correlation is undefined for constant input.
+
+### T21 — Add paired covariance benchmark and documentation
+- **files/areas:** `bench/`, `CMakeLists.txt`, `Makefile`, `README.md`, `docs/design.md`, `examples/basic.c`, `tests/package_consumer/main.c`
+- **validation:** `make clean && make test && make benchmark && make package-test && cmake --build build --target harvard_math_example && ./build/examples/harvard_math_example`
+- **acceptance:** Paired benchmark/reference rows verify covariance before timing; docs/example/installed consumer show covariance beside correlation/slope; default and optional GSL modes remain honest about semantics.
+- **status:** pending
+- **notes:** Use a dedicated paired benchmark rather than disguising two-array operations as one-array statistics.
+
 ## Later (backlog)
-- Add covariance as the next paired-data capability, reusing the centered summary.
 - Add weighted statistics only after choosing weighted status and normalization contracts.
 - Add streaming accumulators as a separate API only when a real caller needs data that cannot fit in a batch.
 - Add weighted/quantile/correlation modules behind new public headers with their own formula and edge-case contracts.

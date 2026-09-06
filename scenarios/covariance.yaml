@@ -1,0 +1,13 @@
+name: covariance
+description: Compute population/sample covariance and compare paired statistics through the public package.
+tier: 1
+target:
+  kind: cli
+  start: make benchmark
+setup:
+  - The repository is configured with benchmarks and examples enabled.
+steps:
+  - action: Run the paired covariance benchmark.
+    expect: The command verifies covariance results before timing and emits population/sample covariance rows in machine-readable output.
+  - action: Build and run the installed consumer/example.
+    expect: The output demonstrates covariance, correlation, and slope on paired data without private headers.
