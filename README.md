@@ -37,7 +37,7 @@ ctest --test-dir build --output-on-failure
 The example prints:
 
 ```text
-mean=4.50 median=4.00 sample_stddev=2.516611 midrange=5.00
+mean=4.50 median=4.00 sample_stddev=2.516611 zscore=1.390759 slope=2.00 midrange=5.00
 ```
 
 Use `BUILD_SHARED_LIBS=ON` for a shared build; the default is a static library.
@@ -173,6 +173,7 @@ All statistic functions return `hm_status` and write their result to `double *ou
 |---|---|---:|
 | `hm_sum` | Sum of all values | 1 |
 | `hm_mean` | Arithmetic mean | 1 |
+| `hm_zscore` | Standardized value `(value - mean) / stddev` | scalar |
 | `hm_min` / `hm_max` | Smallest / largest value | 1 |
 | `hm_range` | `max - min` | 1 |
 | `hm_median` | Middle value, averaging the two middle values when needed | 1 |
@@ -180,6 +181,7 @@ All statistic functions return `hm_status` and write their result to `double *ou
 | `hm_variance_sample` | Squared deviations divided by `n - 1` | 2 |
 | `hm_stddev_population` | Square root of population variance | 1 |
 | `hm_stddev_sample` | Square root of sample variance | 2 |
+| `hm_slope` | Ordinary least-squares slope for paired `x`/`y` values | 2 |
 
 Population and sample functions are deliberately named separately. There is no hidden default divisor.
 
@@ -191,8 +193,27 @@ Population and sample functions are deliberately named separately. There is no h
 - `HM_STATUS_INSUFFICIENT_DATA` — a sample statistic was requested with fewer than two values.
 - `HM_STATUS_NONFINITE_INPUT` — at least one value is `NaN` or infinite.
 - `HM_STATUS_ALLOCATION_FAILED` — the median's temporary copy could not be allocated.
+- `HM_STATUS_UNDEFINED` — the requested mathematical result is undefined for the supplied values, such as zero z-score standard deviation or constant regression `x` values.
 
 Use `hm_status_message(status)` for a stable human-readable description.
+
+## School-core formulas
+
+The five school-level operations are available through the umbrella header:
+
+- `hm_mean(values, count, &mean)`
+- `hm_stddev_population(values, count, &stddev)`
+- `hm_stddev_sample(values, count, &stddev)`
+- `hm_zscore(value, mean, stddev, &zscore)`
+- `hm_slope(x, y, count, &slope)`
+
+The z-score is `(value - mean) / stddev`. The slope is the ordinary least-squares slope:
+
+```text
+slope = sum((xᵢ - x̄) * (yᵢ - ȳ)) / sum((xᵢ - x̄)^2)
+```
+
+A zero standard deviation makes a z-score undefined. A constant predictor array makes a slope undefined. Both cases return `HM_STATUS_UNDEFINED` without writing the output.
 
 ## Defining a custom statistic
 

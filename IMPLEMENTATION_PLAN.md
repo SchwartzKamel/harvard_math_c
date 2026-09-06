@@ -101,11 +101,11 @@
 - **notes:** Added a separate public regression header/module, centered finite-input implementation with extended fallback, umbrella-header export, and deterministic tests for exact lines, large offsets, constant predictors, insufficient data, invalid pointers, non-finite inputs, and immutability. `make test` passed.
 
 ### T13 — Document and demonstrate the school core
-- **files/areas:** `README.md`, `docs/design.md`, `examples/basic.c`, `examples/CMakeLists.txt`, `tests/package_consumer/`
+- **files/areas:** `README.md`, `docs/design.md`, `examples/basic.c`, `examples/CMakeLists.txt`, `tests/package_consumer/`, `specs/library-scaffold.md`
 - **validation:** `make test && make package-test && cmake --build build --target harvard_math_example && ./build/examples/harvard_math_example`
 - **acceptance:** Public documentation and the runnable example show mean, sample stddev, z-score, and slope with formulas and undefined-case semantics; installed consumers continue to build.
-- **status:** pending
-- **notes:** No z-test, intercept, correlation, or prediction API is added in this slice.
+- **status:** done
+- **notes:** Updated the public API table, school-core formula section, example output, design guidance, historical scaffold scope, and installed consumer. The exact validation command passed with `zscore=1.390759` and `slope=2.00`.
 
 ## Later (backlog)
 - Add streaming accumulators as a separate API only when a real caller needs data that cannot fit in a batch.
@@ -130,8 +130,8 @@
 - **files/areas:** `include/harvard_math/`, `src/`, `tests/`, `examples/basic.c`, `README.md`, installed package
 - **validation:** `make test && make package-test && cmake --build build --target harvard_math_example && ./build/examples/harvard_math_example`
 - **acceptance:** The public example and installed consumer exercise the new z-score and slope APIs, all deterministic tests pass, and the tier-1 school-core journey is satisfied.
-- **status:** pending
-- **notes:**
+- **status:** done
+- **notes:** CTest, installed package consumer, and example execution passed; output includes the expected z-score and slope.
 
 ## Done
 - Plan and requirements artifacts — goal, API defaults, scope, acceptance checks, and holdout journey recorded.
@@ -143,6 +143,8 @@
 - PZ — Performance demo — exact `make clean && make test && make benchmark` gate passed with CSV output.
 - T11 — Checked z-score — public API, undefined status, and boundary tests passed.
 - T12 — Checked ordinary least-squares slope — public regression module and CTest coverage passed.
+- T13 — School-core documentation/example — README, design docs, installed consumer, and example updated and validated.
+- SZ — School-core demo — tier-1 z-score/slope journey passed with satisfaction 100/100.
 - Performance plan and baseline docs audit — checked API performance goal, reference semantics, optional peer policy, and Full-track baseline recorded.
 - T1 — CMake/CTest signal and minimal public library target — configure, build, and status smoke test passed.
 - T2 — Initial descriptive batch-statistics API — clean build and CTest pass; all declared statistics and error paths covered.

@@ -37,11 +37,11 @@ As a C programmer studying or teaching introductory statistics, I want to includ
 - C99 is the compatibility floor. CMake is the canonical build system and Ninja is the recommended generator; the requested Makefile is a thin wrapper, not a second build definition.
 - Statistics operate on immutable finite `double` arrays. Empty input and non-finite values are errors rather than silently propagated sentinels.
 - Public functions use an output pointer plus `hm_status` so a valid numeric result is never confused with an error sentinel.
-- Initial scope is descriptive batch statistics only; no streaming, weighted data, quantiles, probability distributions, CLI, or ABI-stability promise is required yet.
+- The original scaffold slice was descriptive batch statistics only; later school-core slices may add narrowly scoped formulas without implying a full inferential or regression suite.
 
-## Out of scope (this pass)
+## Out of scope (original scaffold pass)
 - Streaming/stateless accumulator objects.
-- Weighted statistics, quantiles/percentiles, covariance/correlation, regression, and probability distributions.
+- Weighted statistics, quantiles/percentiles, covariance/correlation, full regression, and probability distributions.
 - Integer/generic numeric containers and user-defined allocators.
 - Publishing to a system package manager or remote registry.
 - A command-line application built on top of the library.

@@ -29,9 +29,13 @@ static int report_failure(const char *name, hm_status status)
 int main(void)
 {
     const double values[] = {2.0, 4.0, 4.0, 8.0};
+    const double predictor[] = {1.0, 2.0, 3.0, 4.0};
+    const double response[] = {2.0, 4.0, 6.0, 8.0};
     double mean;
     double median;
     double sample_stddev;
+    double zscore;
+    double slope;
     double midrange_result;
     hm_status status;
     hm_statistic_fn custom_statistic = midrange;
@@ -48,12 +52,20 @@ int main(void)
     if (status != HM_STATUS_OK) {
         return report_failure("sample standard deviation", status);
     }
+    status = hm_zscore(8.0, mean, sample_stddev, &zscore);
+    if (status != HM_STATUS_OK) {
+        return report_failure("z-score", status);
+    }
+    status = hm_slope(predictor, response, 4, &slope);
+    if (status != HM_STATUS_OK) {
+        return report_failure("slope", status);
+    }
     status = custom_statistic(values, 4, &midrange_result);
     if (status != HM_STATUS_OK) {
         return report_failure("custom midrange", status);
     }
 
-    printf("mean=%.2f median=%.2f sample_stddev=%.6f midrange=%.2f\n",
-           mean, median, sample_stddev, midrange_result);
+    printf("mean=%.2f median=%.2f sample_stddev=%.6f zscore=%.6f slope=%.2f midrange=%.2f\n",
+           mean, median, sample_stddev, zscore, slope, midrange_result);
     return 0;
 }

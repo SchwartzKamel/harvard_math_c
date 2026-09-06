@@ -67,14 +67,14 @@ Variance uses a centered two-pass double fast path: the first pass validates and
 
 Keep future areas independent and discoverable:
 
-1. Add a focused public header under `include/harvard_math/`, such as `probability.h` or `regression.h`.
+1. Add a focused public header under `include/harvard_math/`, such as `probability.h` or `distribution.h`; ordinary regression slope now lives in `regression.h`.
 2. Add its implementation under `src/` and keep private helpers there.
 3. Use `hm_status` and document all boundary conditions in the public header.
 4. Add a matching test source under `tests/` and register it with CTest.
 5. Include the header from `harvard_math.h` only when it is part of the supported umbrella API.
 6. Update README/API documentation and the install/export rules if a new public artifact is introduced.
 
-Streaming accumulators should be a separate module and type when needed; they should not complicate the simple batch calls.
+The school core currently includes z-score and ordinary least-squares slope. Streaming accumulators should be a separate module and type when needed; they should not complicate the simple batch calls.
 
 ## Build and packaging
 
