@@ -1,6 +1,13 @@
 # Prerequisites
 *.d
 
+# CMake build trees
+/build/
+cmake-build-*/
+
+# Local agent state
+/.wgm/
+
 # Object files
 *.o
 *.ko

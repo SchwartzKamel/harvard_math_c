@@ -1,0 +1,14 @@
+name: import-and-use
+description: Install the library and use its public CMake package from a separate consumer.
+tier: 1
+target:
+  kind: cli
+  start: cmake --install build --prefix /tmp/harvard_math-prefix && cmake -S tests/package_consumer -B /tmp/harvard_math-consumer -DCMAKE_PREFIX_PATH=/tmp/harvard_math-prefix && cmake --build /tmp/harvard_math-consumer && /tmp/harvard_math-consumer/harvard_math_consumer
+setup:
+  - The repository has been configured and built in build/.
+  - A temporary install prefix is writable.
+steps:
+  - action: Install the built library into a temporary prefix and configure a separate CMake consumer with that prefix.
+    expect: The consumer discovers the exported harvard_math package without source-tree include or library paths.
+  - action: Build and run the consumer, which includes the public umbrella header and computes statistics for 2, 4, 4, and 8.
+    expect: The executable exits successfully and prints the expected mean, median, sample standard deviation, and a custom statistic result.
