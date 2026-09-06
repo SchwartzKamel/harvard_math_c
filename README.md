@@ -37,7 +37,7 @@ ctest --test-dir build --output-on-failure
 The example prints:
 
 ```text
-mean=4.50 q1=3.50 median=4.00 q3=5.00 sample_stddev=2.516611 zscore=1.390759 slope=2.00 ztest=2.00 p=0.045500 ci=[96.080072,103.919928] intercept=0.00 correlation=1.00 prediction=10.00 multiple_prediction=-1.00 midrange=5.00
+mean=4.50 q1=3.50 median=4.00 q3=5.00 sample_stddev=2.516611 zscore=1.390759 slope=2.00 ztest=2.00 p=0.045500 ci=[96.080072,103.919928] intercept=0.00 correlation=1.00 covariance=3.33 prediction=10.00 multiple_prediction=-1.00 midrange=5.00
 ```
 
 Use `BUILD_SHARED_LIBS=ON` for a shared build; the default is a static library.
@@ -76,7 +76,7 @@ The benchmark is a local measurement, not a universal performance guarantee. It 
 PKG_CONFIG_PATH=/path/to/gsl/lib/pkgconfig make benchmark GSL=ON
 ```
 
-GSL is not required for the default benchmark; missing GSL is reported as an optional peer limitation.
+GSL is not required for the default benchmark; missing GSL is reported as an optional peer limitation. Paired covariance timings are emitted by the companion `pair-benchmark.csv` artifact.
 
 #### Performance snapshot
 
@@ -252,7 +252,7 @@ hm_confidence_interval interval;
 hm_mean_confidence_interval(100.0, 10.0, 25, 0.95, &interval);
 ```
 
-Simple regression exposes `hm_slope`, `hm_intercept`, `hm_correlation`, and `hm_predict`. Multiple regression accepts a row-major predictor matrix with an automatic intercept:
+Simple paired-data analysis exposes `hm_slope`, `hm_intercept`, `hm_correlation`, `hm_covariance_population`, `hm_covariance_sample`, and `hm_predict`. Multiple regression accepts a row-major predictor matrix with an automatic intercept:
 
 ```c
 /* predictors contains rows * predictor_count values. */

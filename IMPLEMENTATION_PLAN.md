@@ -166,8 +166,8 @@
 - **files/areas:** `bench/`, `CMakeLists.txt`, `Makefile`, `README.md`, `docs/design.md`, `examples/basic.c`, `tests/package_consumer/main.c`
 - **validation:** `make clean && make test && make benchmark && make package-test && cmake --build build --target harvard_math_example && ./build/examples/harvard_math_example`
 - **acceptance:** Paired benchmark/reference rows verify covariance before timing; docs/example/installed consumer show covariance beside correlation/slope; default and optional GSL modes remain honest about semantics.
-- **status:** pending
-- **notes:** Use a dedicated paired benchmark rather than disguising two-array operations as one-array statistics.
+- **status:** done
+- **notes:** Added a dedicated paired benchmark with machine-readable CSV output, optional GSL covariance peer, covariance docs, example/consumer output, and exact validation. The measured first run reported population covariance near parity and sample covariance below the simple reference, preserving the requirement to measure rather than claim.
 
 ## Later (backlog)
 - Add weighted statistics only after choosing weighted status and normalization contracts.
@@ -228,6 +228,7 @@
 - T18 — Checked quantiles — interpolation semantics, boundary tests, and Q1/Q3 benchmark rows passed.
 - T19 — Quantile documentation/example — Q-fraction docs, installed consumer, and warning-free example passed.
 - T20 — Paired covariance — population/sample formulas and centered boundary tests passed.
+- T21 — Paired covariance benchmark/docs — dedicated benchmark, installed consumer, example, and documentation passed.
 - QZ — Quantile demo — tier-1 Q1/median/Q3 journey passed with satisfaction 100/100.
 - IZ — Inferential/regression demo — tier-1 z-test/interval/regression journey passed with satisfaction 100/100.
 - SZ — School-core demo — tier-1 z-score/slope journey passed with satisfaction 100/100.

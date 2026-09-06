@@ -48,6 +48,7 @@ int main(void)
     double slope;
     double intercept;
     double correlation;
+    double covariance_sample;
     double prediction;
     double coefficients[3];
     double multiple_prediction;
@@ -102,6 +103,10 @@ int main(void)
     if (status != HM_STATUS_OK) {
         return report_failure("correlation", status);
     }
+    status = hm_covariance_sample(predictor, response, 4, &covariance_sample);
+    if (status != HM_STATUS_OK) {
+        return report_failure("sample covariance", status);
+    }
     status = hm_predict(5.0, intercept, slope, &prediction);
     if (status != HM_STATUS_OK) {
         return report_failure("simple prediction", status);
@@ -122,10 +127,11 @@ int main(void)
 
     printf("mean=%.2f q1=%.2f median=%.2f q3=%.2f sample_stddev=%.6f "
            "zscore=%.6f slope=%.2f ztest=%.2f p=%.6f ci=[%.6f,%.6f] "
-           "intercept=%.2f correlation=%.2f prediction=%.2f "
+           "intercept=%.2f correlation=%.2f covariance=%.2f prediction=%.2f "
            "multiple_prediction=%.2f midrange=%.2f\n",
            mean, q1, median, q3, sample_stddev, zscore, slope,
            ztest.z_score, ztest.p_value, interval.lower, interval.upper,
-           intercept, correlation, prediction, multiple_prediction, midrange_result);
+           intercept, correlation, covariance_sample, prediction, multiple_prediction,
+           midrange_result);
     return 0;
 }

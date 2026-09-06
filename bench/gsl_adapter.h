@@ -10,5 +10,7 @@ hm_status hm_gsl_range(const double *values, size_t count, double *out);
 hm_status hm_gsl_median(const double *values, size_t count, double *out);
 hm_status hm_gsl_variance_sample(const double *values, size_t count, double *out);
 hm_status hm_gsl_stddev_sample(const double *values, size_t count, double *out);
+hm_status hm_gsl_covariance_population(const double *x, const double *y, size_t count, double *out);
+hm_status hm_gsl_covariance_sample(const double *x, const double *y, size_t count, double *out);
 
 #endif /* HARVARD_MATH_GSL_ADAPTER_H */

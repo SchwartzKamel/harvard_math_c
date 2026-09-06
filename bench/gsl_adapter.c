@@ -118,3 +118,48 @@ hm_status hm_gsl_stddev_sample(const double *values, size_t count, double *out)
     *out = gsl_stats_sd(values, 1, count);
     return HM_STATUS_OK;
 }
+
+static hm_status validate_pair_values(const double *x, const double *y, size_t count)
+{
+    if (x == NULL || y == NULL) {
+        return HM_STATUS_INVALID_ARGUMENT;
+    }
+    if (count == 0) {
+        return HM_STATUS_EMPTY_INPUT;
+    }
+    for (size_t i = 0; i < count; ++i) {
+        if (!isfinite(x[i]) || !isfinite(y[i])) {
+            return HM_STATUS_NONFINITE_INPUT;
+        }
+    }
+    return HM_STATUS_OK;
+}
+
+hm_status hm_gsl_covariance_sample(const double *x, const double *y, size_t count, double *out)
+{
+    hm_status status;
+
+    if (out == NULL) {
+        return HM_STATUS_INVALID_ARGUMENT;
+    }
+    status = validate_pair_values(x, y, count);
+    if (status != HM_STATUS_OK) {
+        return status;
+    }
+    if (count < 2) {
+        return HM_STATUS_INSUFFICIENT_DATA;
+    }
+    *out = gsl_stats_covariance(x, 1, y, 1, count);
+    return HM_STATUS_OK;
+}
+
+hm_status hm_gsl_covariance_population(const double *x, const double *y, size_t count, double *out)
+{
+    hm_status status = hm_gsl_covariance_sample(x, y, count, out);
+
+    if (status != HM_STATUS_OK) {
+        return status;
+    }
+    *out *= (double)(count - 1) / (double)count;
+    return HM_STATUS_OK;
+}

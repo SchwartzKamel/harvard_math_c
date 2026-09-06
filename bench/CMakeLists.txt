@@ -12,7 +12,19 @@ target_compile_definitions(
     PRIVATE HM_BENCHMARK_BUILD_TYPE="${CMAKE_BUILD_TYPE}"
 )
 target_link_libraries(harvard_math_benchmark PRIVATE harvard_math::harvard_math)
+
+add_executable(harvard_math_pair_benchmark pair_benchmark.c)
+target_compile_features(harvard_math_pair_benchmark PRIVATE c_std_99)
+target_compile_definitions(
+    harvard_math_pair_benchmark
+    PRIVATE HM_BENCHMARK_BUILD_TYPE="${CMAKE_BUILD_TYPE}"
+)
+target_link_libraries(harvard_math_pair_benchmark PRIVATE harvard_math::harvard_math)
+
 if(HM_BENCHMARK_GSL)
     target_compile_definitions(harvard_math_benchmark PRIVATE HM_HAVE_GSL)
+    target_compile_definitions(harvard_math_pair_benchmark PRIVATE HM_HAVE_GSL)
+    target_sources(harvard_math_pair_benchmark PRIVATE gsl_adapter.c)
     target_link_libraries(harvard_math_benchmark PRIVATE PkgConfig::GSL)
+    target_link_libraries(harvard_math_pair_benchmark PRIVATE PkgConfig::GSL)
 endif()

@@ -80,7 +80,7 @@ The school core currently includes z-score and ordinary least-squares slope. The
 ## Inferential and regression modules
 
 - `analysis.h` owns alternative hypotheses, z-test result structs, p-values, and known-σ confidence intervals.
-- `regression.h` owns simple paired-data statistics plus intercept-first multiple-regression fit/prediction.
+- `regression.h` owns simple paired-data statistics, population/sample covariance, and intercept-first multiple-regression fit/prediction.
 - `HM_STATUS_UNDEFINED` identifies zero denominators, constant predictors, singular matrices, and non-finite computed results; malformed arguments retain `HM_STATUS_INVALID_ARGUMENT`.
 - Multiple regression adds an intercept automatically and accepts row-major predictor data. Its educational partial-pivot solver is intentionally bounded in scope.
 

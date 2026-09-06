@@ -43,6 +43,7 @@ int main(void)
     double slope;
     double intercept;
     double correlation;
+    double covariance_sample;
     double prediction;
     double coefficients[3];
     double multiple_prediction;
@@ -62,6 +63,7 @@ int main(void)
         hm_mean_confidence_interval(100.0, 10.0, 25, 0.95, &interval) != HM_STATUS_OK ||
         hm_intercept(predictor, response, 4, &intercept) != HM_STATUS_OK ||
         hm_correlation(predictor, response, 4, &correlation) != HM_STATUS_OK ||
+        hm_covariance_sample(predictor, response, 4, &covariance_sample) != HM_STATUS_OK ||
         hm_predict(5.0, intercept, slope, &prediction) != HM_STATUS_OK ||
         hm_multiple_regression_fit(multiple_predictors, 4, 2, multiple_responses, coefficients) != HM_STATUS_OK ||
         hm_multiple_predict(coefficients, 2, prediction_row, &multiple_prediction) != HM_STATUS_OK ||
@@ -81,6 +83,7 @@ int main(void)
         !close_enough(interval.upper, 103.919928) ||
         !close_enough(intercept, 0.0) ||
         !close_enough(correlation, 1.0) ||
+        !close_enough(covariance_sample, 10.0 / 3.0) ||
         !close_enough(prediction, 10.0) ||
         !close_enough(coefficients[0], 5.0) ||
         !close_enough(coefficients[1], 2.0) ||
@@ -91,10 +94,10 @@ int main(void)
     }
 
     printf("mean=%.2f q1=%.2f median=%.2f q3=%.2f sample_stddev=%.6f zscore=%.6f slope=%.2f "
-           "ztest=%.2f p=%.6f ci=[%.6f,%.6f] intercept=%.2f correlation=%.2f "
+           "ztest=%.2f p=%.6f ci=[%.6f,%.6f] intercept=%.2f correlation=%.2f covariance=%.2f "
            "prediction=%.2f multiple_prediction=%.2f midrange=%.2f\n",
            mean, q1, median, q3, sample_stddev, zscore, slope,
            ztest.z_score, ztest.p_value, interval.lower, interval.upper,
-           intercept, correlation, prediction, multiple_prediction, custom);
+           intercept, correlation, covariance_sample, prediction, multiple_prediction, custom);
     return 0;
 }

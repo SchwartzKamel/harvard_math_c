@@ -45,6 +45,7 @@ benchmark:
 	$(CMAKE) -S . -B "$(BUILD_DIR)" $(CMAKE_OPTIONS) -DHM_BUILD_BENCHMARKS=ON -DCMAKE_BUILD_TYPE=$(BENCHMARK_BUILD_TYPE)
 	$(CMAKE) --build "$(BUILD_DIR)"
 	"$(BUILD_DIR)/bench/harvard_math_benchmark" --csv "$(BUILD_DIR)/benchmark.csv"
+	"$(BUILD_DIR)/bench/harvard_math_pair_benchmark" --csv "$(BUILD_DIR)/pair-benchmark.csv"
 
 install: build
 	DESTDIR="$(DESTDIR)" $(CMAKE) --install "$(BUILD_DIR)" --prefix "$(PREFIX)"
