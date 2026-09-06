@@ -18,11 +18,11 @@
 - **notes:** `cmake -S . -B build -DHM_BUILD_TESTS=ON && cmake --build build && ctest --test-dir build --output-on-failure` passed; one status smoke test passed.
 
 ### T2 — Implement the initial descriptive batch-statistics API
-- **files/areas:** `include/harvard_math/stats.h`, `src/stats.c`, `tests/test_stats.c`
+- **files/areas:** `CMakeLists.txt`, `include/harvard_math/stats.h`, `src/stats.c`, `tests/test_stats.c`
 - **validation:** `cmake --build build && ctest --test-dir build --output-on-failure`
 - **acceptance:** Sum, mean, min, max, range, median, population/sample variance, and population/sample stddev implement the documented status contract, numerical formulas, finite-input checks, and non-mutating median behavior.
-- **status:** pending
-- **notes:**
+- **status:** done
+- **notes:** Build and CTest pass with coverage for all ten public operations, invalid input, sample-size boundaries, custom function signature, and median immutability. Corrected the initial test expectation after checking the deviations for `{8, 2, 4, 4}` (population variance is `4.75`).
 
 ### T3 — Add install/export/pkg-config integration and a separate consumer
 - **files/areas:** `cmake/`, `tests/package_consumer/`, `tests/`, `CMakeLists.txt`
@@ -53,6 +53,7 @@
 ## Done
 - Plan and requirements artifacts — goal, API defaults, scope, acceptance checks, and holdout journey recorded.
 - T1 — CMake/CTest signal and minimal public library target — configure, build, and status smoke test passed.
+- T2 — Initial descriptive batch-statistics API — clean build and CTest pass; all declared statistics and error paths covered.
 
 ---
 

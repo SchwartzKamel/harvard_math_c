@@ -22,6 +22,10 @@ target_include_directories(harvard_math
         $<INSTALL_INTERFACE:include>
 )
 
+if(NOT WIN32)
+    target_link_libraries(harvard_math PUBLIC m)
+endif()
+
 if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang|AppleClang")
     target_compile_options(harvard_math PRIVATE -Wall -Wextra -Wpedantic)
 elseif(MSVC)
