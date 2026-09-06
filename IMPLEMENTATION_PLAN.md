@@ -30,7 +30,7 @@
 - **acceptance:** The install tree contains headers, library, CMake package files, and pkg-config metadata; a separate project discovers, links, and runs the library through the exported target.
 - **scenarios/tier:** `import-and-use`, tier 1.
 - **status:** done
-- **notes:** Installed static archive, public headers, CMake config/version/targets, and pkg-config metadata. A separate Ninja consumer discovered `harvard_math::harvard_math`, built, passed CTest, and printed the expected results.
+- **notes:** Installed static archive, public headers, CMake config/version/targets, and pkg-config metadata. A separate Ninja consumer discovered `harvard_math::harvard_math`, built, passed CTest, and printed the expected results. Review also compiled a non-CMake consumer from the generated pkg-config flags, including the required `-lm` dependency.
 
 ### T4 — Document the quick-start API and extension/layout conventions
 - **files/areas:** `README.md`, `docs/design.md`, `examples/basic.c`, `examples/CMakeLists.txt`
@@ -65,6 +65,7 @@
 - T4 — Documentation, layout guide, and runnable example — Ninja configure/build and example execution passed.
 - T5 — Make convenience wrapper — `make clean && make test && make example && make package-test` passed.
 - TZ — External installed-consumer demo — tier-1 scenario scored 100/100; deterministic CTest and executable output passed.
+- Ship review — docs audit GREEN; pkg-config static-link dependency verified with a real consumer.
 
 ---
 

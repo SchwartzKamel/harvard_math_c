@@ -22,6 +22,8 @@ tests/                       in-tree deterministic tests
     package_consumer/        separate downstream-package consumer
 examples/                    small copy-pasteable programs
 cmake/                       install-package and pkg-config templates
+Makefile                     thin CMake/Ninja convenience wrapper
+docs/                        design notes and audit trail
 specs/                       requirements and project engineering decisions
 scenarios/                   black-box acceptance journeys
 ```

@@ -57,7 +57,7 @@ Override the generator or build directory when needed:
 
 ```bash
 make BUILD_DIR=build-shared BUILD_SHARED_LIBS=ON test
-make GENERATOR="Unix Makefiles" test
+make BUILD_DIR=build-make GENERATOR="Unix Makefiles" test
 ```
 
 ## Install and import from another CMake project
@@ -97,7 +97,7 @@ PKG_CONFIG_PATH="$HOME/.local/lib/pkgconfig" \
 
 ## Initial API
 
-All functions return `hm_status` and write their result to `double *out` only on success.
+All statistic functions return `hm_status` and write their result to `double *out` only on success. `hm_status_message` converts a status to readable text.
 
 | Function | Meaning | Minimum input |
 |---|---|---:|
@@ -167,7 +167,17 @@ tests/                       CTest unit tests
 examples/                    runnable usage examples
 cmake/                       CMake package and pkg-config templates
 Makefile                     thin CMake/Ninja convenience wrapper
-docs/                        design and extension notes
+docs/                        design, extension notes, and audit trail
+specs/                       project requirements and engineering principles
+scenarios/                   black-box acceptance journeys
 ```
+
+Repository engineering references:
+
+- [`AGENTS.md`](AGENTS.md) — build, validation, and codebase conventions.
+- [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md) — task state for the current scaffold.
+- [`docs/README.md`](docs/README.md) — documentation index.
+- [`docs/design.md`](docs/design.md) — API rationale, algorithms, and extension rules.
+- [`specs/`](specs/) and [`scenarios/`](scenarios/) — requirements and holdout acceptance journeys.
 
 See [`docs/design.md`](docs/design.md) for the API rationale, error boundaries, algorithms, and rules for adding future statistical modules.

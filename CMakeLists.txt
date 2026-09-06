@@ -68,6 +68,10 @@ install(
     DESTINATION ${HM_INSTALL_CMAKEDIR}
 )
 
+set(HM_PKGCONFIG_MATH_LIB "")
+if(NOT WIN32)
+    set(HM_PKGCONFIG_MATH_LIB "-lm")
+endif()
 configure_file(
     ${PROJECT_SOURCE_DIR}/cmake/harvard_math.pc.in
     ${PROJECT_BINARY_DIR}/harvard_math.pc

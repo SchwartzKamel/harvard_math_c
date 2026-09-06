@@ -8,6 +8,8 @@ HM_BUILD_EXAMPLES ?= ON
 CMAKE ?= cmake
 CTEST ?= ctest
 CMAKE_CONFIGURE_FLAGS ?=
+PACKAGE_PREFIX := $(abspath $(BUILD_DIR)/package-prefix)
+PACKAGE_BUILD_DIR := $(abspath $(BUILD_DIR)/package-consumer)
 
 CMAKE_OPTIONS = \
 	-G "$(GENERATOR)" \
@@ -37,11 +39,11 @@ install: build
 	DESTDIR="$(DESTDIR)" $(CMAKE) --install "$(BUILD_DIR)" --prefix "$(PREFIX)"
 
 package-test: build
-	rm -rf "$(BUILD_DIR)/package-prefix" "$(BUILD_DIR)/package-consumer"
-	$(CMAKE) --install "$(BUILD_DIR)" --prefix "$(CURDIR)/$(BUILD_DIR)/package-prefix"
-	$(CMAKE) -S tests/package_consumer -B "$(BUILD_DIR)/package-consumer" -G "$(GENERATOR)" -DCMAKE_PREFIX_PATH="$(CURDIR)/$(BUILD_DIR)/package-prefix"
-	$(CMAKE) --build "$(BUILD_DIR)/package-consumer"
-	$(CTEST) --test-dir "$(BUILD_DIR)/package-consumer" --output-on-failure
+	rm -rf "$(PACKAGE_PREFIX)" "$(PACKAGE_BUILD_DIR)"
+	$(CMAKE) --install "$(BUILD_DIR)" --prefix "$(PACKAGE_PREFIX)"
+	$(CMAKE) -S tests/package_consumer -B "$(PACKAGE_BUILD_DIR)" -G "$(GENERATOR)" -DCMAKE_PREFIX_PATH="$(PACKAGE_PREFIX)"
+	$(CMAKE) --build "$(PACKAGE_BUILD_DIR)"
+	$(CTEST) --test-dir "$(PACKAGE_BUILD_DIR)" --output-on-failure
 
 clean:
 	rm -rf "$(BUILD_DIR)"

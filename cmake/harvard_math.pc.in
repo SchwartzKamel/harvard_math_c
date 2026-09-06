@@ -6,5 +6,5 @@ includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
 Name: harvard_math
 Description: Small descriptive-statistics library for C
 Version: @PROJECT_VERSION@
-Libs: -L${libdir} -lharvard_math
+Libs: -L${libdir} -lharvard_math @HM_PKGCONFIG_MATH_LIB@
 Cflags: -I${includedir}
