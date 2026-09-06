@@ -70,11 +70,11 @@
 - **notes:** Fused validation into the copy, then replaced large-input qsort with median-of-three three-way introselect plus a depth-limited local qsort fallback; small inputs retain qsort. Fuzz, sorted/reverse/duplicate/organ-pipe cases, CTest, and benchmarks passed. Median improved from near parity to roughly 16x on the generated 1,048,576-value workload and avoided the organ-pipe quickselect worst case.
 
 ### T9 — Add an optional GSL peer adapter and semantic comparison
-- **files/areas:** `bench/`, `CMakeLists.txt`, `Makefile`, `docs/design.md`
-- **validation:** `make benchmark` without GSL, plus `make benchmark GSL=ON` on a host with GSL installed
+- **files/areas:** `bench/`, `CMakeLists.txt`, `Makefile`, `README.md`, `docs/design.md`
+- **validation:** `make benchmark` without GSL, plus `PKG_CONFIG_PATH=/tmp/gsl-install/lib/pkgconfig make benchmark GSL=ON` on a host with GSL installed
 - **acceptance:** The default build remains dependency-free and identifies GSL as unavailable when absent; when enabled, the adapter compares only matching operations and records GSL's stride, sample-variance, direct-return, and sorted-median semantics.
-- **status:** pending
-- **notes:** Current host does not expose `gsl-config`; optional peer validation must be explicit rather than silently skipped.
+- **status:** done
+- **notes:** Default mode reported GSL unavailable and passed. Built GSL 2.8 in `/tmp/gsl-install`, then the GSL-enabled Ninja build and correctness-checked peer comparison passed for mean/min/max/range/median/sample variance/sample stddev. Sum and population variance remain intentionally reference-only.
 
 ### T10 — Publish reproducible performance methodology and results
 - **files/areas:** `README.md`, `docs/design.md`, `bench/`
@@ -107,6 +107,7 @@
 - T6 — Correctness-checked benchmark harness and handwritten baseline — Release benchmark, CSV output, metadata, and pre-timing result checks passed.
 - T7 — Fast checked linear statistics — safe one-pass/fused paths and centered variance passed CTest and met the current benchmark target.
 - T8 — Fast checked median — fused copy/validation and guarded introselect passed adversarial-shape tests and benchmarked well above qsort on the generated large workload.
+- T9 — Optional GSL peer adapter — dependency-free and GSL-enabled benchmark modes both passed with semantic differences documented.
 - Performance plan and baseline docs audit — checked API performance goal, reference semantics, optional peer policy, and Full-track baseline recorded.
 - T1 — CMake/CTest signal and minimal public library target — configure, build, and status smoke test passed.
 - T2 — Initial descriptive batch-statistics API — clean build and CTest pass; all declared statistics and error paths covered.

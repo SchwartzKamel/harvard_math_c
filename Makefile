@@ -6,6 +6,8 @@ BUILD_SHARED_LIBS ?= OFF
 HM_BUILD_TESTS ?= ON
 HM_BUILD_EXAMPLES ?= ON
 HM_BUILD_BENCHMARKS ?= OFF
+GSL ?= OFF
+HM_BENCHMARK_GSL ?= $(GSL)
 BENCHMARK_BUILD_TYPE ?= Release
 CMAKE ?= cmake
 CTEST ?= ctest
@@ -20,6 +22,7 @@ CMAKE_OPTIONS = \
 	-DHM_BUILD_TESTS=$(HM_BUILD_TESTS) \
 	-DHM_BUILD_EXAMPLES=$(HM_BUILD_EXAMPLES) \
 	-DHM_BUILD_BENCHMARKS=$(HM_BUILD_BENCHMARKS) \
+	-DHM_BENCHMARK_GSL=$(HM_BENCHMARK_GSL) \
 	$(CMAKE_CONFIGURE_FLAGS)
 
 .PHONY: all configure build test example benchmark install package-test clean help
@@ -65,4 +68,4 @@ help:
 		'make package-test Install to build/package-prefix and test an external consumer' \
 		'make install     Install using PREFIX=/path (default /usr/local)' \
 		'make clean       Remove the selected build directory' \
-		'Variables: BUILD_DIR, PREFIX, GENERATOR, BUILD_TYPE, BENCHMARK_BUILD_TYPE, BUILD_SHARED_LIBS, CMAKE_CONFIGURE_FLAGS'
+		'Variables: BUILD_DIR, PREFIX, GENERATOR, BUILD_TYPE, BENCHMARK_BUILD_TYPE, BUILD_SHARED_LIBS, GSL, CMAKE_CONFIGURE_FLAGS'

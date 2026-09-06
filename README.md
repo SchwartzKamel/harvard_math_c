@@ -70,7 +70,13 @@ make benchmark
 
 This builds an optimized Release benchmark, generates one deterministic finite `double` dataset, checks that the library and handwritten C reference produce equivalent results, then prints timings and relative speedups. Machine-readable results are written to `build/benchmark.csv`.
 
-The benchmark is a local measurement, not a universal performance guarantee. It records the compiler, build type, input size, warmups, and repetitions so results can be compared responsibly across machines. Optional GSL comparison support is planned separately; GSL is not required for the default benchmark.
+The benchmark is a local measurement, not a universal performance guarantee. It records the compiler, build type, input size, warmups, and repetitions so results can be compared responsibly across machines. With GNU Scientific Library 2.8+ available through pkg-config, add `GSL=ON` to compare semantically matching GSL operations:
+
+```bash
+PKG_CONFIG_PATH=/path/to/gsl/lib/pkgconfig make benchmark GSL=ON
+```
+
+GSL is not required for the default benchmark; missing GSL is reported as an optional peer limitation.
 
 ## Install and import from another CMake project
 

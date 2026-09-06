@@ -3,6 +3,9 @@
 #endif
 
 #include "reference_stats.h"
+#ifdef HM_HAVE_GSL
+#    include "gsl_adapter.h"
+#endif
 
 #include <errno.h>
 #include <math.h>
@@ -24,13 +27,17 @@ struct benchmark_case {
     const char *name;
     hm_statistic_fn library_statistic;
     hm_statistic_fn reference_statistic;
+    hm_statistic_fn peer_statistic;
 };
 
 struct benchmark_result {
     double reference_seconds;
     double library_seconds;
+    double peer_seconds;
     double reference_value;
     double library_value;
+    double peer_value;
+    int has_peer;
 };
 
 static const char *compiler_name(void)
@@ -134,9 +141,10 @@ static struct benchmark_result run_case(const struct benchmark_case *test_case,
                                          const double *values, size_t count,
                                          size_t warmups, size_t repetitions)
 {
-    struct benchmark_result result;
+    struct benchmark_result result = {0};
     hm_status library_status;
     hm_status reference_status;
+    hm_status peer_status;
     double difference;
 
     library_status = test_case->library_statistic(values, count, &result.library_value);
@@ -160,6 +168,25 @@ static struct benchmark_result run_case(const struct benchmark_case *test_case,
     result.library_seconds = run_statistic(
         test_case->library_statistic, values, count, warmups, repetitions,
         &result.library_value);
+
+    result.has_peer = test_case->peer_statistic != NULL;
+    if (result.has_peer) {
+        peer_status = test_case->peer_statistic(values, count, &result.peer_value);
+        if (peer_status != HM_STATUS_OK) {
+            fprintf(stderr, "%s peer returned status %s\n", test_case->name,
+                    hm_status_message(peer_status));
+            exit(EXIT_FAILURE);
+        }
+        difference = fabs(result.peer_value - result.reference_value);
+        if (difference > tolerance_for(result.reference_value)) {
+            fprintf(stderr, "%s peer result mismatch: peer=%.17g reference=%.17g\n",
+                    test_case->name, result.peer_value, result.reference_value);
+            exit(EXIT_FAILURE);
+        }
+        result.peer_seconds = run_statistic(
+            test_case->peer_statistic, values, count, warmups, repetitions,
+            &result.peer_value);
+    }
     return result;
 }
 
@@ -169,35 +196,58 @@ static void print_human_result(const struct benchmark_case *test_case,
     const double reference_microseconds = result->reference_seconds * 1e6;
     const double library_microseconds = result->library_seconds * 1e6;
 
-    printf("%-24s %-10zu %12.3f %15.3f %8.2fx\n",
-           test_case->name, count, reference_microseconds, library_microseconds,
-           result->reference_seconds / result->library_seconds);
+    if (result->has_peer) {
+        printf("%-24s %-10zu %12.3f %15.3f %8.2fx %12.3f %8.2fx\n",
+               test_case->name, count, reference_microseconds, library_microseconds,
+               result->reference_seconds / result->library_seconds,
+               result->peer_seconds * 1e6,
+               result->library_seconds / result->peer_seconds);
+    } else {
+        printf("%-24s %-10zu %12.3f %15.3f %8.2fx\n",
+               test_case->name, count, reference_microseconds, library_microseconds,
+               result->reference_seconds / result->library_seconds);
+    }
 }
 
 static void write_csv_result(FILE *csv, const struct benchmark_case *test_case,
                              size_t count, size_t warmups, size_t repetitions,
                              const struct benchmark_result *result)
 {
-    fprintf(csv, "%s,%zu,%zu,%zu,%.9g,%.9g,%.9g,%.17g,%.17g\n",
+    fprintf(csv, "%s,%zu,%zu,%zu,%.9g,%.9g,%.9g,%.17g,%.17g,",
             test_case->name, count, warmups, repetitions,
             result->reference_seconds, result->library_seconds,
             result->reference_seconds / result->library_seconds,
             result->reference_value, result->library_value);
+    if (result->has_peer) {
+        fprintf(csv, "%.9g,%.9g,%.17g",
+                result->peer_seconds,
+                result->library_seconds / result->peer_seconds,
+                result->peer_value);
+    } else {
+        fprintf(csv, ",,");
+    }
+    fputc('\n', csv);
 }
+
+#ifdef HM_HAVE_GSL
+#    define PEER(function) function
+#else
+#    define PEER(function) NULL
+#endif
 
 int main(int argc, char **argv)
 {
     const struct benchmark_case cases[] = {
-        {"sum", hm_sum, hm_reference_sum},
-        {"mean", hm_mean, hm_reference_mean},
-        {"min", hm_min, hm_reference_min},
-        {"max", hm_max, hm_reference_max},
-        {"range", hm_range, hm_reference_range},
-        {"median", hm_median, hm_reference_median},
-        {"variance_population", hm_variance_population, hm_reference_variance_population},
-        {"variance_sample", hm_variance_sample, hm_reference_variance_sample},
-        {"stddev_population", hm_stddev_population, hm_reference_stddev_population},
-        {"stddev_sample", hm_stddev_sample, hm_reference_stddev_sample}
+        {"sum", hm_sum, hm_reference_sum, PEER(NULL)},
+        {"mean", hm_mean, hm_reference_mean, PEER(hm_gsl_mean)},
+        {"min", hm_min, hm_reference_min, PEER(hm_gsl_min)},
+        {"max", hm_max, hm_reference_max, PEER(hm_gsl_max)},
+        {"range", hm_range, hm_reference_range, PEER(hm_gsl_range)},
+        {"median", hm_median, hm_reference_median, PEER(hm_gsl_median)},
+        {"variance_population", hm_variance_population, hm_reference_variance_population, PEER(NULL)},
+        {"variance_sample", hm_variance_sample, hm_reference_variance_sample, PEER(hm_gsl_variance_sample)},
+        {"stddev_population", hm_stddev_population, hm_reference_stddev_population, PEER(NULL)},
+        {"stddev_sample", hm_stddev_sample, hm_reference_stddev_sample, PEER(hm_gsl_stddev_sample)}
     };
     const size_t case_count = sizeof cases / sizeof cases[0];
     size_t count = 1U << 20;
@@ -262,17 +312,25 @@ int main(int argc, char **argv)
             free(values);
             return EXIT_FAILURE;
         }
-        fprintf(csv, "operation,count,warmups,repetitions,reference_seconds,library_seconds,speedup,reference_result,library_result\n");
+        fprintf(csv, "operation,count,warmups,repetitions,reference_seconds,library_seconds,speedup,reference_result,library_result,gsl_seconds,library_over_gsl,gsl_result\n");
     }
 
     printf("harvard_math benchmark\n");
     printf("compiler: %s\n", compiler_name());
     printf("build_type: %s\n", HM_BENCHMARK_BUILD_TYPE);
     printf("count: %zu, warmups: %zu, repetitions: %zu\n", count, warmups, repetitions);
-    printf("Results are checked against the reference before timing.\n\n");
+    printf("Results are checked against the reference before timing.\n");
+#ifdef HM_HAVE_GSL
+    printf("Peer: GNU Scientific Library (GSL); only semantically matching operations are shown.\n\n");
+    printf("%-24s %-10s %12s %15s %8s %12s %10s\n",
+           "operation", "count", "reference us", "harvard_math us", "hm/ref", "GSL us", "hm/GSL");
+    printf("---------------------------------------------------------------------------------------\n");
+#else
+    printf("Peer: GSL unavailable; rerun with GSL=ON on a GSL-enabled host.\n\n");
     printf("%-24s %-10s %12s %15s %8s\n",
-           "operation", "count", "reference us", "harvard_math us", "speedup");
+           "operation", "count", "reference us", "harvard_math us", "hm/ref");
     printf("--------------------------------------------------------------------------\n");
+#endif
 
     for (size_t i = 0; i < case_count; ++i) {
         const struct benchmark_result result = run_case(

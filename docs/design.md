@@ -93,3 +93,9 @@ make test
 ```
 
 Installation exports the `harvard_math::harvard_math` target, headers, a CMake config package, and pkg-config metadata. A downstream project should use the exported target rather than manually guessing library or include paths.
+
+## Benchmark peers
+
+The no-dependency benchmark compares the checked API with a straightforward handwritten C reference. GNU Scientific Library (GSL) is an optional peer enabled with `make benchmark GSL=ON` when `pkg-config` can find `gsl`. The adapter validates finite input before calling GSL, uses stride 1, compares GSL's sample variance and standard deviation with the matching `hm_*` functions, and copies input before calling GSL's in-place quickselect median. Sum and population variance have no direct GSL row in this initial comparison.
+
+A GSL comparison is a peer measurement, not a proof that either implementation is universally faster. Keep compiler flags, input data, allocation semantics, and sample/population definitions visible when interpreting it.

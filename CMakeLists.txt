@@ -12,6 +12,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 option(HM_BUILD_TESTS "Build harvard_math tests" ON)
 option(HM_BUILD_EXAMPLES "Build harvard_math examples" OFF)
 option(HM_BUILD_BENCHMARKS "Build harvard_math benchmarks" OFF)
+option(HM_BENCHMARK_GSL "Compare benchmarks with GNU Scientific Library" OFF)
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
