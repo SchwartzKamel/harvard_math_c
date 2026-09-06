@@ -1,0 +1,14 @@
+name: inferential-regression
+description: Use the public school-inference and regression APIs from the built example and installed consumer.
+tier: 1
+target:
+  kind: cli
+  start: cmake --build build --target harvard_math_example && ./build/examples/harvard_math_example
+setup:
+  - The repository is configured with examples enabled.
+  - The deterministic tests and installed consumer are available.
+steps:
+  - action: Build and run the documented example.
+    expect: The executable exits successfully and prints z statistic/p-value or interval values, simple regression values, and a multiple-regression prediction.
+  - action: Build the installed package consumer.
+    expect: The consumer discovers the exported target, includes the public umbrella header, and validates the new inferential/regression results without private headers.

@@ -18,6 +18,12 @@
 | Z-score | A standardized scalar value computed as `(value - mean) / stddev`. | `hm_zscore` | A z-test statistic. |
 | Slope | The ordinary least-squares slope of paired response values against predictor values. | `hm_slope` | An intercept, correlation, or prediction. |
 | Undefined result | A mathematically requested result with no finite definition for the supplied inputs. | `HM_STATUS_UNDEFINED` | A malformed pointer or non-finite input. |
+| Alternative | The tail direction used by a hypothesis test. | `hm_alternative` | A confidence level. |
+| P-value | The normal-tail probability associated with a z statistic and alternative. | `p_value` | A confidence interval bound. |
+| Confidence interval | An estimated lower/upper range using a known population standard deviation and confidence fraction. | `hm_confidence_interval` | A prediction interval. |
+| Intercept | The fitted response value when the predictor is zero. | `hm_intercept` | A slope. |
+| Correlation | Pearson's standardized linear association for paired arrays. | `hm_correlation` | A regression slope. |
+| Predictor matrix | Row-major multiple-regression input with one row per observation and no intercept column. | `predictors` | A column-major matrix or coefficient vector. |
 
 ## Avoid (non-canonical aliases)
 
@@ -28,4 +34,4 @@
 
 ## Open questions
 
-Streaming, weighted, and inferential statistics are later extensions. The performance pass compares the checked batch API against a reference and optional peer implementations. The school-core slice adds z-score and ordinary least-squares slope without adding hypothesis tests or a full regression model.
+Streaming, weighted, and inferential statistics are later extensions. The performance pass compares the checked batch API against a reference and optional peer implementations. The school-core slice adds z-score and ordinary least-squares slope without adding hypothesis tests or a full regression model. The inferential-regression slice adds known-σ z-tests/intervals and educational simple/multiple regression APIs, not a general statistical modeling system.

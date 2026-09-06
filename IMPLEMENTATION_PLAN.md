@@ -5,9 +5,10 @@
 ## Convergence
 - **Satisfaction threshold:** 95 — overall holdout-scenario score required before handoff.
 - **Stratified order:** tier 1 benchmark journey first; deterministic correctness and benchmark checks remain hard gates.
-- **Scenarios:** `scenarios/performance-benchmark.yaml` and `scenarios/school-core.yaml` (holdouts; do not read during implementation).
+- **Scenarios:** `scenarios/performance-benchmark.yaml`, `scenarios/school-core.yaml`, and `scenarios/inferential-regression.yaml` (holdouts; do not read during implementation).
 - **Performance contract:** optimize the checked public API; do not trade away validation, numerical semantics, or input immutability.
 - **School-core contract:** add z-score and ordinary least-squares slope without expanding into hypothesis tests or a full regression model.
+- **Inferential/regression contract:** add known-σ z-tests/intervals and educational simple/multiple regression with explicit singular-case statuses; do not promise a general modeling solver.
 
 ## Now (next up)
 
@@ -107,6 +108,37 @@
 - **status:** done
 - **notes:** Updated the public API table, school-core formula section, example output, design guidance, historical scaffold scope, and installed consumer. The exact validation command passed with `zscore=1.390759` and `slope=2.00`.
 
+### T14 — Add known-σ z-tests, p-values, and mean confidence intervals
+- **files/areas:** `include/harvard_math/analysis.h`, `include/harvard_math/harvard_math.h`, `src/analysis.c`, `CMakeLists.txt`, `tests/test_analysis.c`
+- **validation:** `make test`
+- **acceptance:** One- and two-sample z-tests return z/p results for all alternatives; known-σ mean intervals support valid confidence fractions; invalid, zero-count, and non-positive-σ inputs preserve status/output contracts.
+- **scenarios/tier:** `inferential-regression`, tier 1.
+- **status:** pending
+- **notes:** Use the normal CDF/erfc and an internal inverse-normal approximation; no t-test dependency.
+
+### T15 — Add simple-regression intercept, correlation, and prediction
+- **files/areas:** `include/harvard_math/regression.h`, `src/regression.c`, `tests/test_regression.c`
+- **validation:** `make test`
+- **acceptance:** Intercept, Pearson correlation, and simple prediction match ordinary least-squares formulas; constant/insufficient/non-finite cases return explicit statuses and inputs remain unchanged.
+- **scenarios/tier:** `inferential-regression`, tier 1.
+- **status:** pending
+- **notes:** Reuse the centered paired-data summary behind the existing slope implementation.
+
+### T16 — Add educational multiple-regression fit and prediction
+- **files/areas:** `include/harvard_math/regression.h`, `src/regression.c`, `tests/test_regression.c`, `docs/design.md`
+- **validation:** `make test`
+- **acceptance:** Row-major predictors fit an intercept-first coefficient vector for full-rank data, predict correctly, and return `HM_STATUS_UNDEFINED` for rank-deficient matrices without mutating inputs.
+- **scenarios/tier:** `inferential-regression`, tier 1.
+- **status:** pending
+- **notes:** Use a checked partial-pivot solver suitable for educational small matrices; document that this is not a high-condition-number general solver.
+
+### T17 — Document and demonstrate inferential/regression extensions
+- **files/areas:** `README.md`, `docs/design.md`, `examples/basic.c`, `tests/package_consumer/main.c`, `tests/package_consumer/`
+- **validation:** `make test && make package-test && cmake --build build --target harvard_math_example && ./build/examples/harvard_math_example`
+- **acceptance:** Public docs and installed/example consumers show z-test/p-value, confidence interval, intercept/correlation/prediction, and multiple-regression prediction with assumptions and edge statuses.
+- **status:** pending
+- **notes:** Keep t-tests, unknown-σ intervals, logistic regression, and coefficient standard errors out of this pass.
+
 ## Later (backlog)
 - Add streaming accumulators as a separate API only when a real caller needs data that cannot fit in a batch.
 - Add weighted/quantile/correlation modules behind new public headers with their own formula and edge-case contracts.
@@ -126,12 +158,19 @@
 - **status:** done
 - **notes:** Exact command passed: CTest green, benchmark CSV generated with ten rows, all rows correctness-checked before timing. Optional GSL-enabled mode also passed separately with GSL 2.8 built using `-O3 -DNDEBUG`.
 
-### SZ — School-core demo validation (required before Ship/Handoff)
+### SZ — School-core demo validation (completed)
 - **files/areas:** `include/harvard_math/`, `src/`, `tests/`, `examples/basic.c`, `README.md`, installed package
 - **validation:** `make test && make package-test && cmake --build build --target harvard_math_example && ./build/examples/harvard_math_example`
 - **acceptance:** The public example and installed consumer exercise the new z-score and slope APIs, all deterministic tests pass, and the tier-1 school-core journey is satisfied.
 - **status:** done
 - **notes:** CTest, installed package consumer, and example execution passed; output includes the expected z-score and slope.
+
+### IZ — Inferential/regression demo validation (required before Ship/Handoff)
+- **files/areas:** `include/harvard_math/`, `src/analysis.c`, `src/regression.c`, `tests/`, `examples/basic.c`, `README.md`, installed package
+- **validation:** `make test && make package-test && cmake --build build --target harvard_math_example && ./build/examples/harvard_math_example`
+- **acceptance:** The example and installed consumer exercise z-tests, p-values, confidence intervals, simple regression, and multiple-regression prediction; all deterministic tests pass; the tier-1 inferential/regression journey is satisfied.
+- **status:** pending
+- **notes:**
 
 ## Done
 - Plan and requirements artifacts — goal, API defaults, scope, acceptance checks, and holdout journey recorded.
