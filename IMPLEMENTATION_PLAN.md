@@ -167,7 +167,7 @@
 - **validation:** `make clean && make test && make benchmark && make package-test && cmake --build build --target harvard_math_example && ./build/examples/harvard_math_example`
 - **acceptance:** Paired benchmark/reference rows verify covariance before timing; docs/example/installed consumer show covariance beside correlation/slope; default and optional GSL modes remain honest about semantics.
 - **status:** done
-- **notes:** Added a dedicated paired benchmark with machine-readable CSV output, optional GSL covariance peer, covariance docs, example/consumer output, and exact validation. The measured first run reported population covariance near parity and sample covariance below the simple reference, preserving the requirement to measure rather than claim.
+- **notes:** Added a dedicated paired benchmark with machine-readable CSV output, optional GSL covariance peer, covariance docs, example/consumer output, and exact validation. Default and `PKG_CONFIG_PATH=/tmp/gsl-install-o3/lib/pkgconfig make benchmark GSL=ON` modes passed; the first measurements reported population covariance near parity and sample covariance below the simple reference, preserving the requirement to measure rather than claim.
 
 ## Later (backlog)
 - Add weighted statistics only after choosing weighted status and normalization contracts.
