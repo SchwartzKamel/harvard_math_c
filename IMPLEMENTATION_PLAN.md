@@ -34,10 +34,10 @@
 
 ### T4 — Document the quick-start API and extension/layout conventions
 - **files/areas:** `README.md`, `docs/design.md`, `examples/basic.c`, `examples/CMakeLists.txt`
-- **validation:** `cmake --build build && ./build/examples/harvard_math_example`
+- **validation:** `cmake -S . -B build -G Ninja -DHM_BUILD_TESTS=ON -DHM_BUILD_EXAMPLES=ON && cmake --build build && ./build/examples/harvard_math_example`
 - **acceptance:** A copy-pasteable example demonstrates built-in and custom statistics; documentation explains build/install/use, error handling, formula naming, and where future modules belong.
-- **status:** pending
-- **notes:**
+- **status:** done
+- **notes:** Added the Ninja-oriented quick start, API/error/formula documentation, layout/extension guide, and runnable custom-statistic example. The example build and execution passed.
 
 ## Later (backlog)
 - Add streaming accumulators as a separate API only when a real caller needs data that cannot fit in a batch.
@@ -55,6 +55,7 @@
 - T1 — CMake/CTest signal and minimal public library target — configure, build, and status smoke test passed.
 - T2 — Initial descriptive batch-statistics API — clean build and CTest pass; all declared statistics and error paths covered.
 - T3 — Install/export/pkg-config integration and external consumer — temporary-prefix install and separate Ninja consumer passed.
+- T4 — Documentation, layout guide, and runnable example — Ninja configure/build and example execution passed.
 
 ---
 

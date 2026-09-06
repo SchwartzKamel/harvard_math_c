@@ -1,0 +1,3 @@
+add_executable(harvard_math_example basic.c)
+target_compile_features(harvard_math_example PRIVATE c_std_99)
+target_link_libraries(harvard_math_example PRIVATE harvard_math::harvard_math)
