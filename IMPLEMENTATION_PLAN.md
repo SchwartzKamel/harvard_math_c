@@ -159,8 +159,8 @@
 - **validation:** `make test`
 - **acceptance:** Population/sample covariance reuse centered paired data, preserve inputs, distinguish `n` from `n-1`, and return explicit invalid/insufficient/non-finite statuses.
 - **scenarios/tier:** `covariance`, tier 1.
-- **status:** pending
-- **notes:** Keep zero covariance valid even when correlation is undefined for constant input.
+- **status:** done
+- **notes:** Added population/sample covariance beside slope/correlation, including constant-input zero covariance and sample-size boundaries. `make test` passed.
 
 ### T21 — Add paired covariance benchmark and documentation
 - **files/areas:** `bench/`, `CMakeLists.txt`, `Makefile`, `README.md`, `docs/design.md`, `examples/basic.c`, `tests/package_consumer/main.c`
@@ -227,6 +227,7 @@
 - T17 — Inferential/regression documentation/example — README, design docs, installed consumer, and example validated.
 - T18 — Checked quantiles — interpolation semantics, boundary tests, and Q1/Q3 benchmark rows passed.
 - T19 — Quantile documentation/example — Q-fraction docs, installed consumer, and warning-free example passed.
+- T20 — Paired covariance — population/sample formulas and centered boundary tests passed.
 - QZ — Quantile demo — tier-1 Q1/median/Q3 journey passed with satisfaction 100/100.
 - IZ — Inferential/regression demo — tier-1 z-test/interval/regression journey passed with satisfaction 100/100.
 - SZ — School-core demo — tier-1 z-score/slope journey passed with satisfaction 100/100.

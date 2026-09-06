@@ -11,6 +11,8 @@ extern "C" {
 HM_API hm_status hm_slope(const double *x, const double *y, size_t count, double *out);
 HM_API hm_status hm_intercept(const double *x, const double *y, size_t count, double *out);
 HM_API hm_status hm_correlation(const double *x, const double *y, size_t count, double *out);
+HM_API hm_status hm_covariance_population(const double *x, const double *y, size_t count, double *out);
+HM_API hm_status hm_covariance_sample(const double *x, const double *y, size_t count, double *out);
 
 /* Predict one response from a fitted simple-regression intercept and slope. */
 HM_API hm_status hm_predict(double x_value, double intercept, double slope, double *out);

@@ -180,6 +180,47 @@ hm_status hm_intercept(const double *x, const double *y, size_t count, double *o
     return HM_STATUS_OK;
 }
 
+hm_status hm_covariance_population(const double *x, const double *y, size_t count, double *out)
+{
+    struct pair_summary summary;
+    hm_status status;
+
+    if (out == NULL) {
+        return HM_STATUS_INVALID_ARGUMENT;
+    }
+    status = calculate_pair_summary(x, y, count, &summary);
+    if (status != HM_STATUS_OK) {
+        return status;
+    }
+    *out = summary.sum_xy / (double)count;
+    if (!isfinite(*out)) {
+        return HM_STATUS_UNDEFINED;
+    }
+    return HM_STATUS_OK;
+}
+
+hm_status hm_covariance_sample(const double *x, const double *y, size_t count, double *out)
+{
+    struct pair_summary summary;
+    hm_status status;
+
+    if (out == NULL) {
+        return HM_STATUS_INVALID_ARGUMENT;
+    }
+    status = calculate_pair_summary(x, y, count, &summary);
+    if (status != HM_STATUS_OK) {
+        return status;
+    }
+    if (count < 2) {
+        return HM_STATUS_INSUFFICIENT_DATA;
+    }
+    *out = summary.sum_xy / (double)(count - 1);
+    if (!isfinite(*out)) {
+        return HM_STATUS_UNDEFINED;
+    }
+    return HM_STATUS_OK;
+}
+
 hm_status hm_correlation(const double *x, const double *y, size_t count, double *out)
 {
     struct pair_summary summary;

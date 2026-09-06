@@ -63,6 +63,10 @@ int main(void)
     CHECK(close_enough(result, 0.0));
     CHECK(hm_correlation(x, y, 4, &result) == HM_STATUS_OK);
     CHECK(close_enough(result, 1.0));
+    CHECK(hm_covariance_population(x, y, 4, &result) == HM_STATUS_OK);
+    CHECK(close_enough(result, 2.5));
+    CHECK(hm_covariance_sample(x, y, 4, &result) == HM_STATUS_OK);
+    CHECK(close_enough(result, 10.0 / 3.0));
     CHECK(hm_predict(5.0, 0.0, 2.0, &result) == HM_STATUS_OK);
     CHECK(close_enough(result, 10.0));
     CHECK(memcmp(x, x_copy, sizeof x) == 0);
@@ -77,6 +81,9 @@ int main(void)
     CHECK(hm_slope(constant_x, y, 3, &result) == HM_STATUS_UNDEFINED);
     CHECK(result == 123.0);
     CHECK(hm_correlation(x, constant_y, 3, &result) == HM_STATUS_UNDEFINED);
+    CHECK(hm_covariance_population(constant_x, y, 3, &result) == HM_STATUS_OK);
+    CHECK(close_enough(result, 0.0));
+    CHECK(hm_covariance_sample(x, y, 1, &result) == HM_STATUS_INSUFFICIENT_DATA);
     CHECK(hm_slope(x, y, 1, &result) == HM_STATUS_INSUFFICIENT_DATA);
     CHECK(hm_slope(NULL, y, 4, &result) == HM_STATUS_INVALID_ARGUMENT);
     CHECK(hm_slope(x, y, 4, NULL) == HM_STATUS_INVALID_ARGUMENT);
